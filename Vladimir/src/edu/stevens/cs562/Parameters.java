@@ -9,6 +9,8 @@ public class Parameters {
 	private ArrayList<String> F;
 	private ArrayList<String> pList;
 	private ArrayList<String> Having;
-	
+	public Parameters(){
+		
+	}
 	
 }
