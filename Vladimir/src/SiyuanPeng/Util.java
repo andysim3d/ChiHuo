@@ -18,7 +18,6 @@ public class Util {
 		}
 	}
 	
-	
 	public List<HashMap<String, String>> mfTable(){
 		String str="month";
 		List<HashMap<String, String>> tuple=null;

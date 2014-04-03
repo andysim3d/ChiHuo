@@ -7,35 +7,72 @@
 
 package edu.stevens.cs562;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 
 import SiyuanPeng.*;
 
 public class projectMain {
-	public static void p(String s){
-		System.out.println(s);
-	}
-	
+
+	static FileWriter fw=null;
+
 	public static void main(String[] args) {
-		projectMain pm=new projectMain();
-//		p("import SiyuanPeng.*;");
+		try {
+			fw=new FileWriter("./generatedProgram.java");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		Util util=new Util();
 		util.mfStructureGenerator();
-		pm.beanCreator(util.list);
+		//		p("import SiyuanPeng.*;");
+		Parameters para=new Parameters();
+		para.parse();
+		projectMain pm=new projectMain();
+		pm.beanCreator(util.list, para);
+	}
+
+	/**
+	 *Create a JavaBean class for the program to be generated. 
+	 */
+	public void beanCreator(List<InfoSchemaBean> list, Parameters para){
+		p("class mfTableBean{");
+		for (int i = 0; i < para.getS().size(); i++) {
+			int n;
+			for (int j = 0; j < list.size(); j++) {
+				if(para.getS().get(i).endsWith(list.get(j).getColumn_name())){
+					n=j;
+					if(list.get(n).getData_type().startsWith("character"))
+						p("\t"+"public String "+para.getS().get(i)+";");
+					else if(list.get(n).getData_type().equals("integer"))
+						p("\t"+"public int "+para.getS().get(i)+";");
+					break;
+				}
+			}
+		}
+		p("}");
+		if(fw!=null){
+			try {
+				fw.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	/**
-	 *Create the JavaBean class for the program to be generated. 
+	 *print the strings to the file and console 
 	 */
-	public void beanCreator(List<InfoSchemaBean> list){
-		p("public class mfTableBean{");
-		for (InfoSchemaBean bean : list) {
-			if(bean.getData_type().startsWith("character"))
-				p("\t"+"public String "+bean.getColumn_name()+";");
-			else if(bean.getData_type().equals("integer"))
-				p("\t"+"public int "+bean.getColumn_name()+";");
+	public static void p(String s){
+		try {
+			fw.append(s);
+			fw.append("\n");
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		p("}");
+		System.out.println(s);
 	}
-	
+
+
 }
