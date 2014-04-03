@@ -4,11 +4,10 @@ import java.util.ArrayList;
 
 public class Parameters {
 	private ArrayList<String> S;
-	private int thea;
-	private ArrayList<String> G;
+	private int n;
+	private ArrayList<String> V;
 	private ArrayList<String> F;
-	private ArrayList<String> pList;
-	private ArrayList<String> Having;
+	private ArrayList<String> Sigma;
 	public Parameters(){
 		
 	}
