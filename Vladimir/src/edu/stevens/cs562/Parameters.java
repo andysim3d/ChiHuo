@@ -27,6 +27,10 @@ public class Parameters {
 		if(s.contains(",")){
 			String[] parseS=s.split(", ");
 			for (int i = 0; i < parseS.length; i++) {
+				if(parseS[i].startsWith("avg")){
+					S.add(parseS[i].replace("avg", "sum"));
+					S.add(parseS[i].replace("avg", "count"));
+				}else
 				S.add(parseS[i]);
 			}
 		}else{
