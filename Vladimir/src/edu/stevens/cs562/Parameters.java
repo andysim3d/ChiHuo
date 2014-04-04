@@ -9,9 +9,9 @@ public class Parameters {
 	private ArrayList<String> F;
 	private ArrayList<String> Sigma;
 
-	String s="cust, prod, 0_avg_quant, 0_max_quant";
+	String s="cust, prod, avg_0_quant, max_0_quant";
 	String v="cust, prod";
-	String f="0_avg_quant, 0_max_quant";
+	String f="avg_0_quant, max_0_quant";
 	String n="0";
 
 	public Parameters(){

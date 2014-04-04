@@ -1,6 +1,6 @@
 class mfTableBean{
 	public String cust;
 	public String prod;
-	public int 0_avg_quant;
-	public int 0_max_quant;
+	public int avg_0_quant;
+	public int max_0_quant;
 }

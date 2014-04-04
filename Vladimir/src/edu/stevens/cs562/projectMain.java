@@ -31,6 +31,14 @@ public class projectMain {
 		para.parse();
 		projectMain pm=new projectMain();
 		pm.beanCreator(util.list, para);
+		
+		if(fw!=null){
+			try {
+				fw.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	/**
@@ -52,13 +60,8 @@ public class projectMain {
 			}
 		}
 		p("}");
-		if(fw!=null){
-			try {
-				fw.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+		
+
 	}
 	
 	/**
