@@ -33,6 +33,7 @@ public class DBUtil {
 		try {
 			con = DriverManager.getConnection(url, usr, pwd);    //connect to the database using the password and username
 			System.out.println("Success connecting server!");
+			System.out.println();
 		}catch(SQLException e) {
 			System.out.println("Connection URL or username or password errors!");
 			e.printStackTrace();

@@ -4,7 +4,7 @@ import SiyuanPeng.*;
 
 public class After {
 	Connection conn=null;
-	ArrayList<mfTableBean> al=null;
+	ArrayList<mfBean> al=null;
 	public static void main(String[] args) {
 		After af=new After();
 		af.mfTableGenerator();
@@ -20,7 +20,7 @@ public class After {
 	}
 
 	public void mfTableGenerator(){
-		al=new ArrayList<mfTableBean>();
+		al=new ArrayList<mfBean>();
 		conn=DBUtil.getInstance().getConnection();
 		Statement st=null;
 		ResultSet rs=null;
@@ -43,7 +43,7 @@ public class After {
 					}
 				}
 				if(!existed){
-					mfTableBean tempbean=new mfTableBean();
+					mfBean tempbean=new mfBean();
 					tempbean.prod=rs.getString("prod");
 					tempbean.cust=rs.getString("cust");
 					tempbean.sum_0_quant=rs.getInt("quant");
@@ -60,12 +60,11 @@ public class After {
 		try {
 			conn.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 		}
 	}
 }
 
-class mfTableBean{
+class mfBean{
 	public String cust;
 	public String prod;
 	//	public int avg_0_quant;
