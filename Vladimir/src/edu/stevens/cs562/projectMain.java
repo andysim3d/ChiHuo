@@ -7,7 +7,6 @@
 
 package edu.stevens.cs562;
 
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.*;
@@ -60,14 +59,10 @@ public class projectMain {
 			int n;
 			if(para.getS().get(i).startsWith("max")||para.getS().get(i).startsWith("sum")||para.getS().get(i).startsWith("count")){
 				p("\t"+"public int "+para.getS().get(i)+";");
-				//			}else if(para.getS().get(i).startsWith("avg")){
-				//				p("\t"+"public int "+para.getS().get(i).replace("avg", "sum")+";");
-				//				p("\t"+"public int "+para.getS().get(i).replace("avg", "count")+";");
-				//			}else if(para.getS().get(i).startsWith("count")){
 			}else{
 				for (int j = 0; j < list.size(); j++) {		//iterate information_schema bean list to match the parameter's type
 					if(para.getS().get(i).endsWith(list.get(j).getColumn_name())){
-						n=j;
+						n=j;//return the index of the parameter in util.list
 						if(list.get(n).getData_type().startsWith("character"))
 							p("\t"+"public String "+para.getS().get(i)+";");
 						else if(list.get(n).getData_type().equals("integer"))
@@ -91,16 +86,6 @@ public class projectMain {
 		p("		main.print();");
 		p("	}");
 
-		p("	public void print(){");
-		p("		for (int i = 0; i < al.size(); i++) {");
-		p("			System.out.print(al.get(i)."+para.getS().get(0)
-				+"+\".....\"+al.get(i)."+para.getS().get(1)
-				+"+\".....\"+"+"al.get(i)."+para.getS().get(2)+"/"+"al.get(i)."+para.getS().get(3)
-				+"+\".....\"+al.get(i)."+para.getS().get(4)+");");
-		p("			System.out.println();");
-		p("		}");
-		p("	}");
-
 		p("	public void mfTableGenerator(){");
 		p("		al=new ArrayList<mfTableBean>();");
 		p("		conn=DBUtil.getInstance().getConnection();");
@@ -110,29 +95,92 @@ public class projectMain {
 		p("			st=conn.createStatement();");
 		p("			rs=st.executeQuery(\"select * from sales;\");");
 		p("			while(rs.next()){");
-		p("				String temp1=rs.getString(\""+para.getS().get(0)+"\");");
-		p("				String temp2=rs.getString(\""+para.getS().get(1)+"\");");
+
+		//all the statements until here are stable.	
+
+		for (int i = 0; i < para.getV().size(); i++) {	//in while loop, define the group by variables 
+			p("				String temp"+i+"=rs.getString(\""+para.getV().get(i)+"\");");
+		}
 		p("				boolean existed=false;");
 		p("				for (int i = 0; i < al.size(); i++) {");
-		p("					if(temp1.equals(al.get(i)."+para.getS().get(0)+")&&temp2.equals(al.get(i)."+para.getS().get(1)+")){");
-		p("						al.get(i).sum_0_quant+=rs.getInt(\"quant\");");
-		p("						al.get(i).count_0_quant++;");
-		p("						if(al.get(i).max_0_quant<rs.getInt(\"quant\")){");
-		p("							al.get(i).max_0_quant=rs.getInt(\"quant\");");
-		p("						}");
+		for (int i = 0; i < para.getV().size(); i++) {
+			p("					if(temp"+i+".equals(al.get(i)."+para.getV().get(i)+")){");
+		}
+
+		//if clause (update)
+
+		for (int i = 0; i < para.getF().size(); i++) {
+			if(para.getF().get(i).startsWith("avg")){
+				for (int h = 0; h < para.getS().size(); h++) {	//number of projected attributes
+					int n=0;
+					if(para.getS().get(h).startsWith("max")){
+						n=h;
+						String[] splitF=para.getS().get(h).split("_");
+						p("						al.get(i).sum_0_"+splitF[2]+"+=rs.getInt(\""+splitF[2]+"\");");
+						p("						al.get(i).count_0_"+splitF[2]+"++;");
+					}
+				}
+			}else if(para.getF().get(i).startsWith("max")){
+				for (int h = 0; h < para.getS().size(); h++) {	//number of projected attributes
+					int n=0;
+					if(para.getS().get(h).startsWith("max")){
+						n=h;
+						String[] splitF=para.getS().get(h).split("_");
+						p("						if(al.get(i).max_0_"+splitF[2]+"<rs.getInt(\""+splitF[2]+"\")){");
+						p("							al.get(i).max_0_"+splitF[2]+"=rs.getInt(\""+splitF[2]+"\");");
+						p("						}");
+					}
+				}
+			}else if(para.getF().get(i).startsWith("min")){
+				for (int h = 0; h < para.getS().size(); h++) {	//number of projected attributes
+					int n=0;
+					if(para.getS().get(h).startsWith("min")){
+						n=h;
+						String[] splitF=para.getS().get(h).split("_");
+						p("						if(al.get(i).min_0_"+splitF[2]+">rs.getInt(\""+splitF[2]+"\")){");
+						p("							al.get(i).min_0_"+splitF[2]+"=rs.getInt(\""+splitF[2]+"\");");
+						p("						}");
+					}
+				}
+			}
+		}
 		p("						existed=true;");
 		p("						break;");
-		p("					}");
+
+
+		//if clause end here
+
+		for (int i = 0; i < para.getV().size(); i++) {
+			p("					}");
+		}
 		p("				}");
+
+		//insert
+
 		p("				if(!existed){");
 		p("					mfTableBean tempbean=new mfTableBean();");
-		p("					tempbean.prod=rs.getString(\"prod\");");//doesn't finish dynamic here
-		p("					tempbean.cust=rs.getString(\"cust\");");
-		p("					tempbean.sum_0_quant=rs.getInt(\"quant\");");
-		p("					tempbean.count_0_quant++;");
-		p("					tempbean.max_0_quant=rs.getInt(\"quant\");");
+		for (int i = 0; i < para.getS().size(); i++) {	//number of projected attributes
+			if(para.getS().get(i).startsWith("count")){
+				p("					tempbean."+para.getS().get(i)+"++;");//if it starts with "count", count++
+			}else{
+				int n=0;
+				for (int j = 0; j < list.size(); j++) {		//iterate information_schema bean list to match the parameter's type
+					if(para.getS().get(i).endsWith(list.get(j).getColumn_name())){
+						n=j;
+						if(list.get(n).getData_type().startsWith("character"))
+							p("					tempbean."+para.getS().get(i)+"=rs.getString(\""+list.get(n).getColumn_name()+"\");");
+						else if(list.get(n).getData_type().equals("integer"))
+							p("					tempbean."+para.getS().get(i)+"=rs.getInt(\""+list.get(n).getColumn_name()+"\");");
+						break;
+					}
+				}
+			}
+		}
+
 		p("					al.add(tempbean);");
 		p("				}");
+
+
 		p("			}");
 
 		p("		} catch (SQLException e) {");
@@ -144,6 +192,22 @@ public class projectMain {
 		p("		} catch (SQLException e) {");
 		p("		}");
 		p("	}");
+
+
+
+		p("	public void print(){");
+		for (int i = 0; i < para.getS().size(); i++) {
+			p("			System.out.print(\""+para.getS().get(i)+".....\");");
+		}
+		p("			System.out.println();");
+		p("		for (int i = 0; i < al.size(); i++) {");
+		for (int i = 0; i < para.getS().size(); i++) {
+			p("			System.out.print(al.get(i)."+para.getS().get(i)+"+\".....\");");
+		}
+		p("			System.out.println();");
+		p("		}");
+		p("	}");
+
 		p("}");
 	}
 
@@ -159,6 +223,4 @@ public class projectMain {
 		}
 		System.out.println(s);
 	}
-
-
 }

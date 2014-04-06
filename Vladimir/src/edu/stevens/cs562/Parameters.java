@@ -9,9 +9,9 @@ public class Parameters {
 	private ArrayList<String> F;
 	private ArrayList<String> Sigma;
 
-	String s="cust, prod, avg_0_quant, max_0_quant";
+	String s="cust, prod, max_0_quant, avg_0_quant, min_0_quant";
 	String v="cust, prod";
-	String f="avg_0_quant, max_0_quant";
+	String f="max_0_quant, avg_0_quant, min_0_quant";
 	String n="0";
 
 	public Parameters(){
@@ -21,7 +21,12 @@ public class Parameters {
 		F=new ArrayList<String>();
 		Sigma=new ArrayList<String>();
 	}
-
+	
+	class SS{
+		String Sname;
+		String Stype;
+	}
+	
 	public void parse(){
 
 		if(s.contains(",")){
