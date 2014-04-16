@@ -4,8 +4,8 @@ import java.sql.*;
 public class DBUtil {
 
 	private String usr ="postgres";
-	private String pwd ="super7110";
-	private String url ="jdbc:postgresql://localhost:5432/try";
+	private String pwd ="zhang";
+	private String url ="jdbc:postgresql://localhost:5432/Test";
 
 	private static DBUtil instance=null;
 	private Connection con=null;

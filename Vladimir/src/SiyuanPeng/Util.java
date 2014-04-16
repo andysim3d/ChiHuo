@@ -41,7 +41,6 @@ public class Util {
 			
 			while(rs.next()){
 				HashMap<String, String> temp=new HashMap<String, String>();
-//				if()
 				
 				for (int i = 0; i < list.size(); i++) {
 				temp.put(list.get(i).getColumn_name(), rs.getString(i+1));

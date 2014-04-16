@@ -9,11 +9,8 @@ public class TestClass {
 		util.mfStructureGenerator();
 		List<HashMap<String, String>> tuple=util.mfTable();
 //		util.groupBy(list, "email");
-//		for (HashMap<String, String> hashMap : tuple) {
-//			System.out.println(hashMap.get("prod"));
-//		}
-	}
-
-	
+		for (HashMap<String, String> hashMap : tuple) {
+			System.out.println(hashMap.get("prod"));
+		}
+	}	
 }
-
