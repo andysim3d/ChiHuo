@@ -31,9 +31,8 @@ public class ParaseParameters {
 			temp.setF(new ArrayList<String>(Arrays.asList(s.split(", "))));
 			
 			System.out.println("SELECT CONDITION-VECT([]):");
-			s = br.readLine();
 			ArrayList<String> sigma = new ArrayList<>();
-			for(int j = 0; j < temp.getN() - 1; j ++){
+			for(int j = 0; j < temp.getN(); j ++){
 				s = br.readLine();
 				sigma.add(s);
 			}
