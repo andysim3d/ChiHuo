@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import Pengfei.Zhang.MF_Structure;
-import Pengfei.Zhang.MF_tuple;
+import Pengfei.Zhang.AggrateFunction;
 import Pengfei.Zhang.ParaseMF;
 import Pengfei.Zhang.ParaseParameters;
 import edu.stevens.cs562.Parameters;
@@ -41,19 +41,15 @@ public class testCS562 {
 	@Test
 	public void TestParase(){
 		MF_Structure mf = ParaseMF.mfParase(pa);
-		Pengfei.Zhang.MF_tuple[] m= new Pengfei.Zhang.MF_tuple[mf.tuples.size()];
-		m[0] = new MF_tuple();
-		m[0].aggregate_function = "sum(quant)";
-		m[0].grouping_variable = "cust";
-		m[1] = new MF_tuple();
-		m[2] = new MF_tuple();
-		m[1].grouping_variable = "cust";
-		m[2].grouping_variable = "cust";
-		m[1].aggregate_function = "sum(quant)";
-		m[2].aggregate_function = "sum(quant)";
-		ArrayList<Pengfei.Zhang.MF_tuple> l = new ArrayList<>();
-		l.addAll(Arrays.asList(m));
-		System.out.println(mf.tuples.size());
-		assertTrue(m[0].equals(mf.tuples.get(0)));
+		//ArrayList<AggrateFunction> aggrateFuntion = new ArrayList<>();
+		ArrayList<String> groupingAttribute = new ArrayList<>();
+		AggrateFunction s = new AggrateFunction();
+		s.func = "sum";
+		s.funcColum = "quant";
+		s.Label = "1";
+		s.funcName = "sum(quant)";
+		//aggrateFuntion.add("sum(quant)");
+		//assertTrue(mf.aggrate_function.get(0).equals(s));
+		assertTrue(mf.grouping_attributes.equals(Arrays.asList("cust")));
 	}
 }

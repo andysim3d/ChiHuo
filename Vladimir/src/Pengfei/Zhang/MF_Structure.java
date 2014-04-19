@@ -5,9 +5,11 @@ import java.util.ArrayList;
 public class MF_Structure {
 
 
-	public ArrayList<MF_tuple> tuples;
+	public ArrayList<String> grouping_attributes;
+	public ArrayList<AggrateFunction> aggrate_function;
 	
 	public MF_Structure(){
-		this.tuples = new ArrayList<>();
+		grouping_attributes = new ArrayList<>();
+		aggrate_function = new ArrayList<>();
 	}
 }
