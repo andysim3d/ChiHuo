@@ -3,10 +3,13 @@ package Pengfei.Zhang;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
+import SiyuanPeng.Util;
 import edu.stevens.cs562.Parameters;
 
 public class ParaseParameters {
@@ -16,7 +19,36 @@ public class ParaseParameters {
 			System.out.println("SELECT ATTRIBUTE(S):");
 		    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));  
 			String s = br.readLine();
-			temp.setS(new ArrayList<String>(Arrays.asList(s.split(", "))));
+			
+			Util ut = new Util();
+			ut.UtilGenerator();
+
+			String[] name = null;// = //new ArrayList<>();
+			try{
+				name = (s.split(", "));
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+			ArrayList<sBean> sb = new ArrayList<>();
+			
+			for(int i = 0 ; i < name.length; i ++){
+				
+				sBean t = new sBean();
+				
+				if (name[i].contains("_")) {
+					String [] st = name[i].split("_");
+					t.name = name[i];
+					t.type = ut.list.get(st[2]);
+				}
+				else{
+					t.name = name[i];
+					t.type = ut.list.get(name[i]);
+				}
+				sb.add(t);
+			}
+			
+			temp.setS(sb);
 			
 			System.out.println("NUMBER OF GROUPING VARIABLES(n):");
 			s = br.readLine();

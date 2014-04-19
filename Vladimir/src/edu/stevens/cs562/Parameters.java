@@ -2,8 +2,10 @@ package edu.stevens.cs562;
 
 import java.util.ArrayList;
 
+import Pengfei.Zhang.sBean;
+
 public class Parameters {
-	private ArrayList<String> S;
+	private ArrayList<sBean> S;
 	private int N;
 	private ArrayList<String> V;
 	private ArrayList<String> F;
@@ -15,7 +17,7 @@ public class Parameters {
 	String n="0";
 
 	public Parameters(){
-		S=new ArrayList<String>();
+		S=new ArrayList<sBean>();
 		N=0;
 		V=new ArrayList<String>();
 		F=new ArrayList<String>();
@@ -27,50 +29,11 @@ public class Parameters {
 		String Stype;
 	}
 	
-	public void parse(){
-
-		if(s.contains(",")){
-			String[] parseS=s.split(", ");
-			for (int i = 0; i < parseS.length; i++) {
-				if(parseS[i].startsWith("avg")){
-					S.add(parseS[i].replace("avg", "sum"));
-					S.add(parseS[i].replace("avg", "count"));
-				}else
-				S.add(parseS[i]);
-			}
-		}else{
-			S.add(s);
-		}
-
-		N=Integer.parseInt(n);
-
-		if(v.contains(",")){
-			String[] parseV=v.split(", ");
-			for (int i = 0; i < parseV.length; i++) {
-				V.add(parseV[i]);
-			}
-		}else{
-			V.add(s);
-		}
-
-		if(f.contains(",")){
-			String[] parseF=f.split(", ");
-			for (int i = 0; i < parseF.length; i++) {
-				F.add(parseF[i]);
-			}
-		}else{
-			F.add(s);
-		}
-
-	}
-
-
-
-	public ArrayList<String> getS() {
+	public ArrayList<sBean> getS() {
 		return S;
 	}
 
-	public void setS(ArrayList<String> s) {
+	public void setS(ArrayList<sBean> s) {
 		S = s;
 	}
 
