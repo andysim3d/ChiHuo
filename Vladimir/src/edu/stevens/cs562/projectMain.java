@@ -109,38 +109,25 @@ public class projectMain {
 		//if clause (update)
 
 		for (int i = 0; i < para.getF().size(); i++) {
+			
 			if(para.getF().get(i).startsWith("avg")){
 				for (int h = 0; h < para.getS().size(); h++) {	//number of projected attributes
-					int n=0;
 					if(para.getS().get(h).startsWith("max")){
-						n=h;
 						String[] splitF=para.getS().get(h).split("_");
 						p("						al.get(i).sum_0_"+splitF[2]+"+=rs.getInt(\""+splitF[2]+"\");");
 						p("						al.get(i).count_0_"+splitF[2]+"++;");
 					}
 				}
 			}else if(para.getF().get(i).startsWith("max")){
-				for (int h = 0; h < para.getS().size(); h++) {	//number of projected attributes
-					int n=0;
-					if(para.getS().get(h).startsWith("max")){
-						n=h;
-						String[] splitF=para.getS().get(h).split("_");
+						String[] splitF=para.getF().get(i).split("_");
 						p("						if(al.get(i).max_0_"+splitF[2]+"<rs.getInt(\""+splitF[2]+"\")){");
 						p("							al.get(i).max_0_"+splitF[2]+"=rs.getInt(\""+splitF[2]+"\");");
 						p("						}");
-					}
-				}
 			}else if(para.getF().get(i).startsWith("min")){
-				for (int h = 0; h < para.getS().size(); h++) {	//number of projected attributes
-					int n=0;
-					if(para.getS().get(h).startsWith("min")){
-						n=h;
-						String[] splitF=para.getS().get(h).split("_");
+						String[] splitF=para.getF().get(i).split("_");
 						p("						if(al.get(i).min_0_"+splitF[2]+">rs.getInt(\""+splitF[2]+"\")){");
 						p("							al.get(i).min_0_"+splitF[2]+"=rs.getInt(\""+splitF[2]+"\");");
 						p("						}");
-					}
-				}
 			}
 		}
 		p("						existed=true;");
