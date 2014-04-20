@@ -5,7 +5,7 @@
  * Function: test
  */
 
-package SiyuanPeng_program;
+package SiyuanPeng_MF;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -25,7 +25,7 @@ public class projectMain {
 			e.printStackTrace();
 		}
 
-		Util util=new Util();
+		Util_list util=new Util_list();
 		util.mfStructureGenerator();
 		Parameters para=new Parameters();
 		para.parse();

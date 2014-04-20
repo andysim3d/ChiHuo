@@ -3,11 +3,12 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Util {
+public class Util_list {
 	Connection con=null;
-	public HashMap<String, String> map=new HashMap<>();
+	public List<InfoSchemaBean> list=new ArrayList<>();;
 
 	/**
 	 * Connect the database and retrieve the "information_schema" of the table.
@@ -20,7 +21,13 @@ public class Util {
 				ResultSet rs = st.executeQuery(sql);) {
 			while(rs.next())
 			{
-				map.put(rs.getString(2), rs.getString(4));
+				InfoSchemaBean temp=new InfoSchemaBean();
+				temp.setTable_name(rs.getString(1));
+				temp.setColumn_name(rs.getString(2));
+				temp.setIs_nullable(rs.getString(3));
+				temp.setData_type(rs.getString(4));
+				temp.setCharacter_maximum_length(rs.getString(5));
+				list.add(temp);
 			}
 
 		} catch(SQLException e) {
