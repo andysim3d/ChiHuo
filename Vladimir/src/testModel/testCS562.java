@@ -1,20 +1,9 @@
 package testModel;
 
-import static org.junit.Assert.*;
-
 import java.util.ArrayList;
-import java.util.Arrays;
-
 import Pengfei.Zhang.GenerateNewJAVA;
-import Pengfei.Zhang.MF_Structure;
 import Pengfei.Zhang.AggrateFunction;
-import Pengfei.Zhang.ParaseMF;
-import Pengfei.Zhang.ParaseParameters;
-import SiyuanPeng.Util;
-
 import org.junit.Test;
-
-import edu.stevens.cs562.Parameters;
 
 public class testCS562 {
 

@@ -1,8 +1,12 @@
 package Pengfei.Zhang;
 
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import SiyuanPeng.Util;
 import SiyuanPeng_program.Parameters;
 
@@ -84,8 +88,8 @@ public class GenerateNewJAVA {
 	public void generateGeneralDS(){
 		p("class ClassOfAll{");
 		p("public String incase = \"\";");
-		p("public int Max = 99999;");
-		p("public int Min = 0;");
+		p("public int Max = 0;");
+		p("public int Min = 99999;");
 		p("public int Count = 0;");
 		p("public int Sum = 0;");
 		p("public int Sum_of_AVG = 0;");
@@ -93,8 +97,8 @@ public class GenerateNewJAVA {
 		p("public int AVG = 0;");
 		p("public ClassOfAll(){");
 		p("incase = \"\";");
-		p("Max = 99999;");
-		p("Min = 0;");
+		p("Max = 0;");
+		p("Min = 99999;");
 		p("Count = 0;");
 		p("Sum = 0;");
 		p("Sum_of_AVG = 0;");
@@ -132,7 +136,7 @@ public class GenerateNewJAVA {
 		p("		ResultSet rs=null;");
 		p("		try {");
 		p("			st=conn.createStatement();");
-		p("			rs=st.executeQuery(\"select * from sales;\");");
+		p("			rs=st.executeQuery(\"select * from sales\");");
 		//loop 0, generate table and title;
 		p("			while(rs.next()){");
 		p("				boolean exist = false;");	
@@ -198,7 +202,7 @@ public class GenerateNewJAVA {
 		p("			}");
 		//loop 1~n
 		for(int lop = 1; lop <= para.getN(); lop ++){
-			p("			rs=st.executeQuery(\"select * from sales;\");");
+			p("			rs=st.executeQuery(\"select * from sales\");");
 			p("			while(rs.next()){");
 			for (int i = 0; i < para.getV().size(); i++) {
 				String type = list.get(para.getV().get(i));
@@ -209,19 +213,57 @@ public class GenerateNewJAVA {
 					p("				int ga"+String.valueOf(i)+ " = rs.getInt(\""+para.getV().get(i)+"\");");	
 				}
 			}
-			//find if it exist
-			p("				for(int i = 0; i < al.size(); i++){");
-			for( int i = 0; i < para.getV().size(); i++){
-				p("					if(ga"+String.valueOf(i)+" == al.get(i)."+para.getV().get(i)+"){");
-			}
+			
+			///EMF & MF
 			for( String sig : para.getSigma()){
 				if(sig.startsWith(String.valueOf(lop))){
-					String [] con = sig.split("")
-					p("					if(ga"+String.valueOf(i)+" == al.get(i)."+para.getV().get(i)+"){");
+					//get operator
+					String [] con = sig.split(">=|<=|!=|=|>|<");
+					String [] left=con[0].split("\\.|_");
+					Pattern p=Pattern.compile("[>=]{2}|[<=]{2}|=|<|>|[!=]{2}");
+					Matcher m=p.matcher(sig);
+					String sign="";
+					while(m.find()){
+						
+						sign=sig.substring(m.start(),m.end());
+					}
+					if(list.get(left[left.length -1]).contains("charac")){
+						p("					if(rs.getString(\""+left[left.length -1]+"\").equals(\""+con[1].replace("'", "")+"\")){");
+					}
+					else{
+						if(sign.equals("=")){
+							p("					if(rs.getInt(\""+left[left.length -1]+"\") == "+con[1]+"){");
+						}
+						else{
+							p("					if(rs.getInt(\""+left[left.length -1]+"\")"+ sign +" "+con[1]+"){");
+						}
+					}
 
 				}
 			}
-			p("						Pos = i;");
+			//find if it exist
+			p("				for(int i = 0; i < al.size(); i++){");
+			for( int i = 0; i < para.getV().size(); i++){
+				if(list.get(para.getV().get(i)).contains("charac")){
+					p("					if(ga"+String.valueOf(i)+".equals(al.get(i)."+para.getV().get(i)+")){");
+				}
+				else{
+					p("					if(ga"+String.valueOf(i)+" == al.get(i)."+para.getV().get(i)+"){");
+				}
+			}
+			for(sBean sb : para.getS()){
+				if(sb.name.startsWith(String.valueOf(lop))){
+					String[] strs = sb.name.split("_");
+					p("						al.get(i)._"+sb.name +" = update(al.get(i)._"+sb.name +", rs.getInt(\""+ strs[2]+ "\"));");
+				}
+			}
+			///
+			//p("						Pos = i;");
+			for( String sig : para.getSigma()){
+				if(sig.startsWith(String.valueOf(lop))){
+					p("					}");
+				}
+			}
 			for( int i = 0; i < para.getV().size(); i++){
 				p("					}");
 			}
@@ -387,11 +429,45 @@ public class GenerateNewJAVA {
 
 	public void generatePrint(Parameters pa){
 		p("public void print(){");
-		pl("\tSystem.out.print(\"" + pa.getS().get(0).name);
-		for(int i = 1; i < pa.getS().size(); i++){
+		pl("\tSystem.out.println(\"");// + pa.getS().get(0).name);
+		for(int i = 0; i < pa.getS().size(); i++){
 			pl("\\t\\t"+ pa.getS().get(i).name);
 		}
 		pl("\");");
+		p("");
+
+		p("			for(mfTableBean mfb : al){");
+		pl("				System.out.println(\" \" ");
+		for(sBean sb: pa.getS()){
+			if(sb.name.contains("_")){
+				String [] psk = sb.name.split("_");
+				pl(" +\"\\t\\t\" + mfb._" + sb.name + ".");
+				switch(psk[1]){
+				case "min":
+					pl("Min");
+					break;
+				case "max":
+					pl("Max");
+					break;
+				case "count":
+					pl("Count");
+					break;
+				case "sum":
+					pl("Sum");
+					break;
+				case "avg":
+					pl("Avg");
+					break;
+				}
+			}
+			else
+			{
+				pl(" + \"\\t\\t\" + mfb."+sb.name);
+			}
+		}
+		pl(");");
+		p("}");
+		
 		p("}");
 	}
 	
