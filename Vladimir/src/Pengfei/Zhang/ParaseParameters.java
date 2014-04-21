@@ -3,14 +3,16 @@ package Pengfei.Zhang;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.TreeSet;
 
 import SiyuanPeng.Util;
-import edu.stevens.cs562.Parameters;
+import SiyuanPeng_program.Parameters;
 
 public class ParaseParameters {
 	public static Parameters ParaseInput(){
@@ -60,7 +62,26 @@ public class ParaseParameters {
 			
 			System.out.println("F-VECT([F]):");
 			s = br.readLine();
-			temp.setF(new ArrayList<String>(Arrays.asList(s.split(", "))));
+			
+			
+			try {
+				ArrayList<sBean> tp = new ArrayList<>();
+				String [] f = s.split(", ");
+				for (int i = 0; i < f.length; i++) {
+					sBean t = new sBean();
+					String [] f0 = f[i].split("_");
+					t.name = f[i];
+					t.type = ut.list.get(f0[2]);
+					tp.add(t);
+				}
+				temp.setF(tp);
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+			
+			
+			
+			//temp.setF(new ArrayList<String>(Arrays.asList(s.split(", "))));
 			
 			System.out.println("SELECT CONDITION-VECT([]):");
 			ArrayList<String> sigma = new ArrayList<>();
@@ -69,11 +90,31 @@ public class ParaseParameters {
 				sigma.add(s);
 			}
 			temp.setSigma(sigma);
-			return temp;
+
+			//TreeSet<sBean> set = new TreeSet<>();
+		    Hashtable<String, sBean> ta = new Hashtable<>();
+		    
+			for (sBean smb : temp.getF()) {
+				ta.put(smb.name, smb);
+			}
+			for (sBean smb : temp.getS()) {
+				ta.put(smb.name, smb);
+			}
+			
+			Set<sBean> bens = new HashSet<>();
+			for (String key : ta.keySet()) {
+				bens.add(ta.get(key));
+			}
+			
+		    //set.
+		    temp.setBeanset(bens);
+			return temp;//temp.setBeanset(set);;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	    
+	    
 	    return new Parameters();
 	}
 }

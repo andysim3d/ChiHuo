@@ -11,7 +11,7 @@ import java.util.List;
 public class Util {
 	Connection con=null;
 	//string a means colum name, string b means type name
-	public Hashtable<String, String> list=null;
+	public HashMap<String, String> list=null;
 	
 	/*
 	public List<HashMap<String, String>> mfTable(){
@@ -70,7 +70,7 @@ public class Util {
 			Statement st = con.createStatement();   //statement created to execute the query
 			String sql = "SELECT table_name, column_name, is_nullable, data_type, character_maximum_length FROM INFORMATION_SCHEMA.Columns WHERE table_name = 'sales'";
 			rs = st.executeQuery(sql);              //executing the query 
-			list=new Hashtable<>();
+			list=new HashMap<>();
 			while(rs.next())
 			{
 				

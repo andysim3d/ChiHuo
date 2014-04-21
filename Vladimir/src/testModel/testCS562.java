@@ -5,22 +5,25 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import Pengfei.Zhang.GenerateNewJAVA;
 import Pengfei.Zhang.MF_Structure;
 import Pengfei.Zhang.AggrateFunction;
 import Pengfei.Zhang.ParaseMF;
 import Pengfei.Zhang.ParaseParameters;
-import edu.stevens.cs562.Parameters;
+import SiyuanPeng.Util;
 
 import org.junit.Test;
 
+import edu.stevens.cs562.Parameters;
+
 public class testCS562 {
 
-	private Parameters pa ;
+	private SiyuanPeng_program.Parameters pa ;
 	
-	public testCS562(){
+//	public testCS562(){
 
-		pa = ParaseParameters.ParaseInput();
-	}
+//		pa = ParaseParameters.ParaseInput();
+//	}
 	
 	/*@Test
 	public void TestInputParase(){
@@ -40,7 +43,12 @@ public class testCS562 {
 	}//*/
 	@Test
 	public void TestParase(){
-		MF_Structure mf = ParaseMF.mfParase(pa);
+		//pa = ParaseParameters.ParaseInput();
+		//MF_Structure mf = ParaseMF.mfParase(pa);
+		//Util ut = new Util();
+		//ut.UtilGenerator();
+		GenerateNewJAVA g = new GenerateNewJAVA();
+		g.main(null);
 		//ArrayList<AggrateFunction> aggrateFuntion = new ArrayList<>();
 		ArrayList<String> groupingAttribute = new ArrayList<>();
 		AggrateFunction s = new AggrateFunction();
@@ -50,6 +58,6 @@ public class testCS562 {
 		s.funcName = "sum(quant)";
 		//aggrateFuntion.add("sum(quant)");
 		//assertTrue(mf.aggrate_function.get(0).equals(s));
-		assertTrue(mf.grouping_attributes.equals(Arrays.asList("cust")));
+		//assertTrue(mf.grouping_attributes.equals(Arrays.asList("cust")));
 	}
 }

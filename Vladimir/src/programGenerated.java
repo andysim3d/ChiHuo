@@ -2,13 +2,34 @@ import java.sql.*;
 import java.util.ArrayList;
 import SiyuanPeng.*;
 
+class ClassOfAll{
+public String incase = "";
+public int Max = 99999;
+public int Min = 0;
+public int Count = 0;
+public int Sum = 0;
+public int Sum_of_AVG = 0;
+public int Count_of_AVG = 0;
+public int AVG = 0;
+public ClassOfAll(){
+incase = "";
+Max = 99999;
+Min = 0;
+Count = 0;
+Sum = 0;
+Sum_of_AVG = 0;
+Count_of_AVG = 0;
+AVG = 0;
+}
+}
 class mfTableBean{
-	public String cust;
-	public String prod;
-	public int max_0_quant;
-	public int sum_0_quant;
-	public int count_0_quant;
-	public int min_0_quant;
+public String cust;
+public int year;
+public String prod;
+public ClassOfAll _0_sum_day = new ClassOfAll();
+public ClassOfAll _3_sum_quant = new ClassOfAll();
+public ClassOfAll _1_sum_quant = new ClassOfAll();
+public ClassOfAll _2_sum_quant = new ClassOfAll();
 }
 public class programGenerated {
 	Connection conn=null;
@@ -18,69 +39,102 @@ public class programGenerated {
 		main.mfTableGenerator();
 		main.print();
 	}
-	public void mfTableGenerator(){
-		al=new ArrayList<mfTableBean>();
-		conn=DBUtil.getInstance().getConnection();
-		Statement st=null;
+public void mfTableGenerator(){
+ al = new ArrayList<mfTableBean>(); 
+    	conn = DBUtil.getInstance().getConnection();
+		Statement st = null;
+		int Pos = 0;
 		ResultSet rs=null;
 		try {
 			st=conn.createStatement();
 			rs=st.executeQuery("select * from sales;");
 			while(rs.next()){
-				String temp0=rs.getString("cust");
-				String temp1=rs.getString("prod");
-				boolean existed=false;
-				for (int i = 0; i < al.size(); i++) {
-					if(temp0.equals(al.get(i).cust)){
-					if(temp1.equals(al.get(i).prod)){
-						if(al.get(i).max_0_quant<rs.getInt("quant")){
-							al.get(i).max_0_quant=rs.getInt("quant");
-						}
-						al.get(i).sum_0_quant+=rs.getInt("quant");
-						al.get(i).count_0_quant++;
-						if(al.get(i).min_0_quant>rs.getInt("quant")){
-							al.get(i).min_0_quant=rs.getInt("quant");
-						}
-						existed=true;
-						break;
+				boolean exist = false;
+				String ga0 = rs.getString("cust");
+				String ga1 = rs.getString("prod");
+				int ga2 = rs.getInt("year");
+				for(int i = 0; i < al.size(); i++){
+					if(ga0.equals(al.get(i).cust)){
+					if(ga1.equals(al.get(i).prod)){
+					if(ga2 == al.get(i).year){
+						Pos = i;
+						exist =true;
+					}
 					}
 					}
 				}
-				if(!existed){
-					mfTableBean tempbean=new mfTableBean();
-					tempbean.cust=rs.getString("cust");
-					tempbean.prod=rs.getString("prod");
-					tempbean.max_0_quant=rs.getInt("quant");
-					tempbean.sum_0_quant=rs.getInt("quant");
-					tempbean.count_0_quant++;
-					tempbean.min_0_quant=rs.getInt("quant");
-					al.add(tempbean);
+				if(exist){
+  					al.get(Pos)._0_sum_day = update(al.get(Pos)._0_sum_day, + rs.getInt("day"));
+				continue;
+				}
+				else{
+					mfTableBean temp = new mfTableBean();
+					temp.cust = ga0;
+					temp.prod = ga1;
+					temp.year = ga2;
+  					temp._0_sum_day = update(temp._0_sum_day, + rs.getInt("day"));
+					al.add(temp);
 				}
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
+			rs=st.executeQuery("select * from sales;");
+			while(rs.next()){
+				String ga0 = rs.getString("cust");
+				String ga1 = rs.getString("prod");
+				int ga2 = rs.getInt("year");
+				for(int i = 0; i < al.size(); i++){
+					if(ga0 == al.get(i).cust){
+					if(ga1 == al.get(i).prod){
+					if(ga2 == al.get(i).year){
+						Pos = i;
+					}
+					}
+					}
+				}
+			}
+			rs=st.executeQuery("select * from sales;");
+			while(rs.next()){
+				String ga0 = rs.getString("cust");
+				String ga1 = rs.getString("prod");
+				int ga2 = rs.getInt("year");
+				for(int i = 0; i < al.size(); i++){
+					if(ga0 == al.get(i).cust){
+					if(ga1 == al.get(i).prod){
+					if(ga2 == al.get(i).year){
+						Pos = i;
+					}
+					}
+					}
+				}
+			}
+			rs=st.executeQuery("select * from sales;");
+			while(rs.next()){
+				String ga0 = rs.getString("cust");
+				String ga1 = rs.getString("prod");
+				int ga2 = rs.getInt("year");
+				for(int i = 0; i < al.size(); i++){
+					if(ga0 == al.get(i).cust){
+					if(ga1 == al.get(i).prod){
+					if(ga2 == al.get(i).year){
+						Pos = i;
+					}
+					}
+					}
+				}
+			}
+		} catch ( Exception e ){
+			e.printStackTrace();}
+}
+	public ClassOfAll update(ClassOfAll all, int value){
+		if(all.Max < value){
+			all.Max = value;
 		}
-		try {
-			conn.close();
-		} catch (SQLException e) {
+		if(all.Min > value){
+			all.Min = value;
 		}
+		all.Sum += value;
+		all.Count++;
+		return all;
 	}
-	public void print(){
-			System.out.print("cust.....");
-			System.out.print("prod.....");
-			System.out.print("max_0_quant.....");
-			System.out.print("sum_0_quant.....");
-			System.out.print("count_0_quant.....");
-			System.out.print("min_0_quant.....");
-			System.out.println();
-		for (int i = 0; i < al.size(); i++) {
-			System.out.print(al.get(i).cust+".....");
-			System.out.print(al.get(i).prod+".....");
-			System.out.print(al.get(i).max_0_quant+".....");
-			System.out.print(al.get(i).sum_0_quant+".....");
-			System.out.print(al.get(i).count_0_quant+".....");
-			System.out.print(al.get(i).min_0_quant+".....");
-			System.out.println();
-		}
-	}
+public void print(){
+	System.out.print("cust\t\tprod\t\tyear\t\t1_sum_quant\t\t2_sum_quant\t\t3_sum_quant");}
 }
