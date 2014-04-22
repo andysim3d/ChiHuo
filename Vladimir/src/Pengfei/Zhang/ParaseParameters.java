@@ -21,13 +21,13 @@ public class ParaseParameters {
 			System.out.println("SELECT ATTRIBUTE(S):");
 		    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));  
 			String s = br.readLine();
-			
+			s = s.replace(" ", "");
 			Util ut = new Util();
 			ut.UtilGenerator();
 
 			String[] name = null;// = //new ArrayList<>();
 			try{
-				name = (s.split(", "));
+				name = (s.split(","));
 			}
 			catch(Exception e){
 				e.printStackTrace();
@@ -54,19 +54,22 @@ public class ParaseParameters {
 			
 			System.out.println("NUMBER OF GROUPING VARIABLES(n):");
 			s = br.readLine();
+			s = s.replace(" ", "");
 			temp.setN(Integer.parseInt(s));
 			
 			System.out.println("GROUPING ATTRIBUTES(V):");
 			s = br.readLine();
-			temp.setV(new ArrayList<String>(Arrays.asList(s.split(", "))));
+			s = s.replace(" ", "");
+			temp.setV(new ArrayList<String>(Arrays.asList(s.split(","))));
 			
 			System.out.println("F-VECT([F]):");
 			s = br.readLine();
+			s = s.replace(" ", "");
 			
 			
 			try {
 				ArrayList<sBean> tp = new ArrayList<>();
-				String [] f = s.split(", ");
+				String [] f = s.split(",");
 				for (int i = 0; i < f.length; i++) {
 					sBean t = new sBean();
 					String [] f0 = f[i].split("_");
@@ -87,6 +90,7 @@ public class ParaseParameters {
 			ArrayList<String> sigma = new ArrayList<>();
 			for(int j = 0; j < temp.getN(); j ++){
 				s = br.readLine();
+				s = s.replace(" ", "");
 				sigma.add(s);
 			}
 			temp.setSigma(sigma);
