@@ -31,12 +31,11 @@ return 0;
 }
 }
 class mfTableBean{
-public ClassOfAll _1_avg_quant = new ClassOfAll();
-public ClassOfAll _3_count_ALL = new ClassOfAll();
 public int month;
-public String prod;
-public ClassOfAll _3_count__ALL = new ClassOfAll();
 public ClassOfAll _2_avg_quant = new ClassOfAll();
+public ClassOfAll _3_count_ALL = new ClassOfAll();
+public String prod;
+public ClassOfAll _1_avg_quant = new ClassOfAll();
 }
 public class programGenerated {
 	Connection conn=null;
@@ -102,9 +101,9 @@ public void mfTableGenerator(){
 				for(int i = 0; i < al.size(); i++){
 					if(rs.getString("prod").equals(al.get(i).prod)){
 					if(rs.getInt("month")==al.get(i).month){
-					if(al.get(i)._1_avg_quant.getAvg()>rs.getInt("quant")){
-					if(al.get(i)._2_avg_quant.getAvg()<rs.getInt("quant")){
-						al.get(i)._3_count_ALL = update(al.get(i)._3_count_ALL, rs.getInt("ALL"));
+					if(rs.getInt("quant") >(al.get(i)._1_avg_quant.getAvg())+1){
+					if(rs.getInt("quant")<al.get(i)._2_avg_quant.getAvg()){
+						al.get(i)._3_count_ALL = update(al.get(i)._3_count_ALL, 1 );
 					}
 					}
 					}
@@ -113,6 +112,15 @@ public void mfTableGenerator(){
 			}
 		} catch ( Exception e ){
 			e.printStackTrace();}
+		finally{
+		try{
+			rs.close();
+			conn.close();
+			st.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
 }
 	public ClassOfAll update(ClassOfAll all, int value){
 		if(all.Max < value){
@@ -126,8 +134,8 @@ public void mfTableGenerator(){
 		return all;
 	}
 public void print(){
-	System.out.println("\t\tprod\t\tmonth\t\t3_count__ALL");
+	System.out.println("\t\tprod\t\tmonth\t\t3_count_ALL");
 			for(mfTableBean mfb : al){
-				System.out.println(" "  + "\t\t" + mfb.prod + "\t\t" + mfb.month +"\t\t" + mfb._3_count__ALL.Count);}
+				System.out.println(" "  + "\t\t" + mfb.prod + "\t\t" + mfb.month +"\t\t" + mfb._3_count_ALL.Count);}
 }
 }

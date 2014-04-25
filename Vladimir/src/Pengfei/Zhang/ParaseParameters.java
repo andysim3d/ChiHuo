@@ -39,7 +39,7 @@ public class ParaseParameters {
 				sBean t = new sBean();
 				//if it contains operator, that must be integer
 				if(name[i].contains("_*")){
-					t.name = name[i].replace("*", "_ALL");
+					t.name = name[i].replace("_*", "_ALL");
 					t.type = "integer";
 				}
 				else if(GenerateNewJAVA.isOperator(name[i]))
