@@ -12,7 +12,7 @@ public class Parameters {
 	private ArrayList<String> V=new ArrayList<>();//be used for group by 
 	private ArrayList<sBean> F=new ArrayList<>();
 	private ArrayList<String> Sigma=new ArrayList<>();
-	private boolean EMF = false;
+	private boolean EMF = true;
 	private Set<sBean> beanset=new HashSet<>();//be used for creating bean and avgFix
 
 	

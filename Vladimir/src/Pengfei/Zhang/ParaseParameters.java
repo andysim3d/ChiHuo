@@ -1,6 +1,7 @@
 package Pengfei.Zhang;
 
 import java.io.BufferedReader;
+import Pengfei.Zhang.GenerateNewJAVA;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -35,17 +36,27 @@ public class ParaseParameters {
 			ArrayList<sBean> sb = new ArrayList<>();
 			
 			for(int i = 0 ; i < name.length; i ++){
-				
 				sBean t = new sBean();
-				
-				if (name[i].contains("_")) {
-					String [] st = name[i].split("_");
+				//if it contains operator, that must be integer
+				if(name[i].contains("_*")){
+					t.name = name[i].replace("*", "_ALL");
+					t.type = "integer";
+				}
+				else if(GenerateNewJAVA.isOperator(name[i]))
+				{
 					t.name = name[i];
-					t.type = ut.list.get(st[2]);
+					t.type = "integer";
 				}
 				else{
-					t.name = name[i];
-					t.type = ut.list.get(name[i]);
+					if (name[i].contains("_")) {
+						String [] st = name[i].split("_");
+						t.name = name[i];
+						t.type = ut.list.get(st[2]);
+					}
+					else{
+						t.name = name[i];
+						t.type = ut.list.get(name[i]);
+					}
 				}
 				sb.add(t);
 			}
@@ -73,6 +84,9 @@ public class ParaseParameters {
 				for (int i = 0; i < f.length; i++) {
 					sBean t = new sBean();
 					String [] f0 = f[i].split("_");
+					if(f[i].contains("_*")){
+						f[i] = f[i].replace("_*", "_ALL");
+					}
 					t.name = f[i];
 					t.type = ut.list.get(f0[2]);
 					tp.add(t);
@@ -88,10 +102,11 @@ public class ParaseParameters {
 			
 			System.out.println("SELECT CONDITION-VECT([]):");
 			ArrayList<String> sigma = new ArrayList<>();
-			for(int j = 0; j < temp.getN(); j ++){
-				s = br.readLine();
+			s = br.readLine();
+			while(! (s.equals(""))){
 				s = s.replace(" ", "");
 				sigma.add(s);
+				s = br.readLine();
 			}
 			temp.setSigma(sigma);
 
@@ -99,10 +114,26 @@ public class ParaseParameters {
 		    Hashtable<String, sBean> ta = new Hashtable<>();
 		    
 			for (sBean smb : temp.getF()) {
-				ta.put(smb.name, smb);
+				if(smb.name.contains("_*")){
+					ta.put(smb.name, smb);
+				}
+				else if(GenerateNewJAVA.isOperator(smb.name)){
+					;
+				}
+				else{
+					ta.put(smb.name, smb);
+				}
 			}
 			for (sBean smb : temp.getS()) {
-				ta.put(smb.name, smb);
+				if(smb.name.contains("_*")){
+					ta.put(smb.name, smb);
+				}
+				else if(GenerateNewJAVA.isOperator(smb.name)){
+					;
+				}
+				else{
+					ta.put(smb.name, smb);
+				}
 			}
 			
 			Set<sBean> bens = new HashSet<>();

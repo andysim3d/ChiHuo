@@ -89,7 +89,7 @@ public class GenerateNewJAVA {
 		p("public int Max = 0;");
 		p("public int Min = 99999;");
 		p("public int Count = 0;");
-		p("public int Sum = 0;");
+		p("public double Sum = 0;");
 		p("public int Sum_of_AVG = 0;");
 		p("public int Count_of_AVG = 0;");
 		p("public int AVG = 0;");
@@ -106,7 +106,10 @@ public class GenerateNewJAVA {
 
 		p("public double getAvg(){");
 		p("	double sum = this.Sum;");
-		p(" sum = sum/((double)Count);");
+		p("if(Count == 0){");
+		p("return 0;");
+		p("}");
+		p(" sum = sum/Count;");
 		p("	return sum;");
 		p("}");
 		p("}");
@@ -242,9 +245,9 @@ public class GenerateNewJAVA {
 			// /EMF & MF
 			for (String sig : para.getSigma()) {
 				if (sig.startsWith(String.valueOf(lop))) {
-					// get operator
 
-					String[] con = sig.split(">=|<=|!=|=|>|<");
+					// get operator
+					String[] con = sig.split("<>|>=|<=|!=|=|>|<");
 					String[] left = con[0].split("\\.|_");
 					Pattern p = Pattern
 							.compile("[>=]{2}|[<=]{2}|=|<|>|[!=]{2}");
@@ -255,70 +258,175 @@ public class GenerateNewJAVA {
 					}
 
 					// if left is string, right should be string
-					String deb = list.get(left[left.length - 1]
-							.replace(" ", ""));
-					if (deb.contains("charac")) {
-						p("					if(rs.getString(\"" + left[left.length - 1]
-								+ "\").equals(\"" + con[1].replace(".", "").replace("'","")
-								+ "\")){");
+					// get the data type
+					String dataType = list.get(left[left.length - 1].replace(
+							" ", ""));
+					//if left operand type is string, right operand should be string, too.
+					
+					if (dataType.contains("charac")) {
+						//if operator is =, look right poerand is a string or a column
+						if (sign.equals("=")) {
+							
+							//if right operand has ', means right is a string
+							if (con[1].contains("'")) {
+								p("					if(rs.getString(\""
+										+ left[left.length - 1]
+										+ "\").equals(\""
+										+ con[1].replace(".", "").replace("'",
+												"") + "\")){");
+							} else {
+								//else, compare it with member
+								p("					if(rs.getString(\""
+										+ left[left.length - 1]
+										+ "\").equals(al.get(i)."
+										+ con[1].replace(".", "").replace("'",
+												"") + ")){");
+							}
+						} else {
+							//if operator is not =, operator should be <>.
+							if (con[1].contains("'")) {
+								//if right operand has ', means right is a string
+								p("					if(!rs.getString(\""
+										+ left[left.length - 1]
+										+ "\").equals(\""
+										+ con[1].replace(".", "").replace("'",
+												"") + "\")){");
+							}
+							//else, compare it with member
+							else {
+								p("					if(!rs.getString(\""
+										+ left[left.length - 1]
+										+ "\").equals(al.get(i)."
+										+ con[1].replace(".", "") + ")){");
+							}
+
+						}
 					} else {
 						// else, if left is integer, right could be _0_
+						// if right has ., it has _
 						if (con[1].contains(".")) {
-							
+							//split it with .
 							String[] cons = con[1].split("\\.");
 							
-							for(sBean sbs : para.getF()){
-								if(sbs.name.contains(cons[0])){
+							//cons should be like 1 avg_quant
+							for (sBean sbs : para.getF()) {
+								if (sbs.name.contains(cons[0])) {
 									cons[0] = sbs.name;
 								}
 							}
+							//split with _
+							//conss should like avg, quant
 							String[] conss = cons[0].split("_");
-							switch(conss[1]){
-							case"avg":
-								cons[0]+=".getAvg()";
+							//select the aggregate function
+							switch (conss[1]) {
+							case "avg":
+								cons[0] += ".getAvg()";
 								break;
-							case"max":
-								cons[0]+=".Max";
-								break;
-
-							case"min":
-								cons[0]+="Min";
+							case "max":
+								cons[0] += ".Max";
 								break;
 
-							case"count":
-								cons[0]+="Count";
+							case "min":
+								cons[0] += "Min";
 								break;
 
-							case"sum":
-								cons[0]+="Sum";
+							case "count":
+								cons[0] += "Count";
 								break;
-								
+
+							case "sum":
+								cons[0] += "Sum";
+								break;
+
 							}
-							// if contains _, means it contains _0_
+							// if sign is =, change it to ==
 							if (sign.equals("=")) {
 								p("					if(rs.getInt(\""
 										+ left[left.length - 1]
-										+ "\") == al.get(i)._"
-										+ cons[0] + "){");
-							} else {
-								p("					if(rs.getInt(\""
-										+ left[left.length - 1] + "\")" + sign
-										+ "al.get(i)._"
-										+ cons[0] + "){");
+										+ "\") == al.get(i)._" + cons[0] + "){");
+							}
+							// else, compare them
+							else {
+								p("					if("+"al.get(i)._" + cons[0]  + sign
+										+ "rs.getInt(\""+ left[left.length - 1] + "\")){");
 							}
 						}
+						// else, should detect if right operand has operator or
+						// not
 						else if (sign.equals("=")) {
-							p("					if(rs.getInt(\"" + left[left.length - 1]
-									+ "\") == " + con[1] + "){");
-						} else {
-							p("					if(rs.getInt(\"" + left[left.length - 1]
-									+ "\")" + sign + " " + con[1] + "){");
+							if (isOperator(con[1])) {
+								String op = "";
+								if (con[1].contains("+")) {
+									op = "+";
+								} else if (con[1].contains("-")) {
+									op = "-";
+								} else if (con[1].contains("*")) {
+									op = "*";
+								} else if (con[1].contains("/")) {
+									op = "/";
+								}
+								// and split string with operators
+								String[] rightPart = con[1]
+										.split("\\+|\\*|-|/");
+								// here, con[1] should be XXXX - 1
+								p("					if((rs.getInt(\"" + rightPart[0]
+										+ "\") " + op + rightPart[1].toString()
+										+ ") == " + "al.get(i)." + left[1]
+										+ "){");
+
+							}
+							// if right opertend is int, just compare it
+							else if (isOperator(con[1])) {
+
+								if (isOperator(con[1])) {
+									String op = "";
+									if (con[1].contains("+")) {
+										op = "+";
+									} else if (con[1].contains("-")) {
+										op = "-";
+									} else if (con[1].contains("*")) {
+										op = "*";
+									} else if (con[1].contains("/")) {
+										op = "/";
+									}
+									// and split string with operators
+									String[] rightPart = con[1]
+											.split("\\+|\\*|-|/");
+									// here, con[1] should be XXXX - 1
+									p("					if(al.get(i)." + left[1] + "){");
+
+								} else if (isNumeric(con[1])) {
+									p("					if(rs.getInt(\""
+											+ left[left.length - 1] + "\") == "
+											+ con[1] + "){");
+								} else {
+									p("					if(rs.getInt(\""
+											+ left[left.length - 1]
+											+ "\") == al.get(i)." + con[1]
+											+ "){");
+								}
+							}
+
+							// if operater
+							else {
+								if (isNumeric(con[1])) {
+									p("					if(rs.getInt(\""
+											+ left[left.length - 1] + "\")"
+											+ "==" + " " + con[1] + "){");
+								} else {
+									p("					if(rs.getInt(\""
+											+ left[left.length - 1] + "\")"
+											+ "==" + "al.get(i)." + con[1]
+											+ "){");
+								}
+							}
 						}
 					}
 
 				}
 			}
-			for (sBean sb : para.getS()) {
+
+			for (sBean sb : para.getF()) {
 				if (sb.name.startsWith(String.valueOf(lop))) {
 					String[] strs = sb.name.split("_");
 					p("						al.get(i)._" + sb.name + " = update(al.get(i)._"
@@ -327,8 +435,8 @@ public class GenerateNewJAVA {
 			}
 			// /
 			// p("						Pos = i;");
-			for (String sig : para.getSigma()) {
-				if (sig.startsWith(String.valueOf(lop))) {
+			for (String sig1 : para.getSigma()) {
+				if (sig1.startsWith(String.valueOf(lop))) {
 					p("					}");
 				}
 			}
@@ -346,6 +454,7 @@ public class GenerateNewJAVA {
 		p("			e.printStackTrace();}");
 
 		p("}");
+		// //lost a brace here
 	}
 
 	/**
@@ -373,7 +482,61 @@ public class GenerateNewJAVA {
 		p("			for(mfTableBean mfb : al){");
 		pl("				System.out.println(\" \" ");
 		for (sBean sb : pa.getS()) {
-			if (sb.name.contains("_")) {
+			if ((GenerateNewJAVA.isOperator(sb.name))
+					&& (!sb.name.contains("_*"))) {
+				String sss[] = sb.name.split("\\+|-|\\*|/");
+				String op = "";
+				if (sb.name.contains("+")) {
+					op = "+";
+				} else if (sb.name.contains("-")) {
+					op = "-";
+				} else if (sb.name.contains("*")) {
+					op = "*";
+				} else if (sb.name.contains("/")) {
+					op = "/";
+				}
+
+				String[] psk = sss[0].split("_");
+				pl(" +\"\\t\\t\" + mfb._" + sss[0] + ".");
+				switch (psk[1]) {
+				case "min":
+					pl("Min");
+					break;
+				case "max":
+					pl("Max");
+					break;
+				case "count":
+					pl("Count");
+					break;
+				case "sum":
+					pl("Sum");
+					break;
+				case "avg":
+					pl("getAvg()");
+					break;
+				}
+				pl(op);
+				String[] psk2 = sss[1].split("_");
+				pl(" + mfb._" + sss[1] + ".");
+				switch (psk[1]) {
+				case "min":
+					pl("Min");
+					break;
+				case "max":
+					pl("Max");
+					break;
+				case "count":
+					pl("Count");
+					break;
+				case "sum":
+					pl("Sum");
+					break;
+				case "avg":
+					pl("getAvg()");
+					break;
+				}
+
+			} else if (sb.name.contains("_")) {
 				String[] psk = sb.name.split("_");
 				pl(" +\"\\t\\t\" + mfb._" + sb.name + ".");
 				switch (psk[1]) {
@@ -403,6 +566,15 @@ public class GenerateNewJAVA {
 		p("}");
 	}
 
+	public static boolean isNumeric(String str) {
+		for (int i = str.length(); --i >= 0;) {
+			if (!Character.isDigit(str.charAt(i))) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	public void generateUpdate() {
 		p("	public ClassOfAll update(ClassOfAll all, int value){");
 		p("		if(all.Max < value){");
@@ -415,6 +587,14 @@ public class GenerateNewJAVA {
 		p("		all.Count++;");
 		p("		return all;");
 		p("	}");
+	}
+
+	public static boolean isOperator(String str) {
+		if ((str.contains("+")) || (str.contains("-")) || (str.contains("*"))
+				|| (str.contains("/"))) {
+			return true;
+		}
+		return false;
 	}
 
 	public static void pl(String s) {
