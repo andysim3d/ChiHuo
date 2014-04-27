@@ -1,7 +1,7 @@
 import java.sql.*;
 import java.util.ArrayList;
 import SiyuanPeng.*;
-
+import Pengfei.Zhang.*;
 class ClassOfAll{
 public String incase = "";
 public int Max = 0;
@@ -31,11 +31,13 @@ return 0;
 }
 }
 class mfTableBean{
+public String _sale = "Null";
+public ClassOfAll _0_quant = new ClassOfAll();
+public ClassOfAll _1_quant = new ClassOfAll();
+public ClassOfAll _2_quant = new ClassOfAll();
+public ClassOfAll _1_year = new ClassOfAll();
+public String cust;
 public int month;
-public ClassOfAll _2_avg_quant = new ClassOfAll();
-public ClassOfAll _3_count_ALL = new ClassOfAll();
-public String prod;
-public ClassOfAll _1_avg_quant = new ClassOfAll();
 }
 public class programGenerated {
 	Connection conn=null;
@@ -56,10 +58,10 @@ public void mfTableGenerator(){
 			rs=st.executeQuery("select * from sales");
 			while(rs.next()){
 				boolean exist = false;
-				String ga0 = rs.getString("prod");
+				String ga0 = rs.getString("cust");
 				int ga1 = rs.getInt("month");
 				for(int i = 0; i < al.size(); i++){
-					if(ga0.equals(al.get(i).prod)){
+					if(ga0.equals(al.get(i).cust)){
 					if(ga1 == al.get(i).month){
 						Pos = i;
 						exist =true;
@@ -67,52 +69,44 @@ public void mfTableGenerator(){
 					}
 				}
 				if(exist){
+  					al.get(Pos)._0_quant = update(al.get(Pos)._0_quant, + rs.getInt("quant"));
 				continue;
 				}
 				else{
 					mfTableBean temp = new mfTableBean();
-					temp.prod = ga0;
+					temp.cust = ga0;
 					temp.month = ga1;
+  					temp._0_quant = update(temp._0_quant, + rs.getInt("quant"));
 					al.add(temp);
 				}
 			}
 			rs=st.executeQuery("select * from sales");
 			while(rs.next()){
 				for(int i = 0; i < al.size(); i++){
-					if(rs.getString("prod").equals(al.get(i).prod)){
-					if((rs.getInt("month") -1) == al.get(i).month){
-						al.get(i)._1_avg_quant = update(al.get(i)._1_avg_quant, rs.getInt("quant"));
-					}
-					}
-				}
+					if(rs.getString("cust").equals(al.get(i).cust)){
+						al.get(i)._1_quant = update(al.get(i)._1_quant, rs.getInt("quant"));
+						al.get(i)._1_year = update(al.get(i)._1_year, rs.getInt("year"));
+			}
+			}
 			}
 			rs=st.executeQuery("select * from sales");
 			while(rs.next()){
 				for(int i = 0; i < al.size(); i++){
-					if(rs.getString("prod").equals(al.get(i).prod)){
-					if((rs.getInt("month") +1) == al.get(i).month){
-						al.get(i)._2_avg_quant = update(al.get(i)._2_avg_quant, rs.getInt("quant"));
-					}
-					}
-				}
+					if(rs.getString("cust").equals(al.get(i).cust)){
+					if(rs.getInt("quant")>al.get(i)._1_quant.getAvg()){
+						al.get(i)._2_quant = update(al.get(i)._2_quant, rs.getInt("quant"));
+			}
+			}
+			}
 			}
 			rs=st.executeQuery("select * from sales");
 			while(rs.next()){
 				for(int i = 0; i < al.size(); i++){
-					if(rs.getString("prod").equals(al.get(i).prod)){
-					if(rs.getInt("month")==al.get(i).month){
-					if(rs.getInt("quant") >(al.get(i)._1_avg_quant.getAvg())+1){
-					if(rs.getInt("quant")<al.get(i)._2_avg_quant.getAvg()){
-						al.get(i)._3_count_ALL = update(al.get(i)._3_count_ALL, 1 );
-					}
-					}
-					}
-					}
-				}
+			}
 			}
 		} catch ( Exception e ){
 			e.printStackTrace();}
-		finally{
+finally{
 		try{
 			rs.close();
 			conn.close();
@@ -134,8 +128,8 @@ public void mfTableGenerator(){
 		return all;
 	}
 public void print(){
-	System.out.println("\t\tprod\t\tmonth\t\t3_count_ALL");
+	System.out.println(outPutFormat.outPutFormats("cust", 8) +outPutFormat.outPutFormats("month", 8) +outPutFormat.outPutFormats("sale", 8) +outPutFormat.outPutFormats("1_avg_quant", 13) +outPutFormat.outPutFormats("0_avg_quant", 13) +outPutFormat.outPutFormats("2_avg_quant", 13) +outPutFormat.outPutFormats("1_avg_year", 12) + " " );
 			for(mfTableBean mfb : al){
-				System.out.println(" "  + "\t\t" + mfb.prod + "\t\t" + mfb.month +"\t\t" + mfb._3_count_ALL.Count);}
+				System.out.println(""  + outPutFormat.outPutFormats(mfb.cust,8) + outPutFormat.outPutFormats(mfb.month,8) + outPutFormat.outPutFormats(mfb._sale,8) + outPutFormat.outPutFormats( mfb._1_quant.getAvg(),13) + outPutFormat.outPutFormats( mfb._0_quant.getAvg(),13) + outPutFormat.outPutFormats( mfb._2_quant.getAvg(),13) + outPutFormat.outPutFormats( mfb._1_year.getAvg(),12));}
 }
 }

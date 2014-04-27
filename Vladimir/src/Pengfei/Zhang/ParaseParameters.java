@@ -37,25 +37,47 @@ public class ParaseParameters {
 			
 			for(int i = 0 ; i < name.length; i ++){
 				sBean t = new sBean();
-				//if it contains operator, that must be integer
+				//if it contains *, that must be integer
 				if(name[i].contains("_*")){
 					t.name = name[i].replace("_*", "_ALL");
 					t.type = "integer";
 				}
 				else if(GenerateNewJAVA.isOperator(name[i]))
 				{
+					//if we have that column, 
+					String [] columnName = name[i].split("_|\\+|-|\\*|/");
+					if(ut.list.containsKey(columnName[2])){
 					t.name = name[i];
 					t.type = "integer";
+					}
+					else{
+						//if we do not have this column
+						t.name = name[i];
+						t.type = "null";
+					}
 				}
 				else{
 					if (name[i].contains("_")) {
-						String [] st = name[i].split("_");
+						String [] columnName = name[i].split("_");
 						t.name = name[i];
-						t.type = ut.list.get(st[2]);
+						//if contains, set to it's type
+						if(ut.list.containsKey(columnName[2]))
+						{
+							t.type = ut.list.get(columnName[2]);
+						}
+						else{
+							t.type = "null";
+						}
 					}
 					else{
 						t.name = name[i];
+						if(ut.list.containsKey(name[i])){
 						t.type = ut.list.get(name[i]);
+						}
+						else
+						{
+							t.type = "null";
+						}
 					}
 				}
 				sb.add(t);
@@ -77,7 +99,7 @@ public class ParaseParameters {
 			s = br.readLine();
 			s = s.replace(" ", "");
 			
-			
+			//grouping variables
 			try {
 				ArrayList<sBean> tp = new ArrayList<>();
 				String [] f = s.split(",");
@@ -93,7 +115,7 @@ public class ParaseParameters {
 				}
 				temp.setF(tp);
 			} catch (Exception e) {
-				// TODO: handle exception
+				e.printStackTrace();
 			}
 			
 			

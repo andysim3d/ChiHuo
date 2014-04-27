@@ -60,8 +60,10 @@ public class GenerateNewJAVA {
 	 * Print the class imported
 	 */
 	public void generateImport() {
-		p("import java.sql.*;" + "\n" + "import java.util.ArrayList;" + "\n"
-				+ "import SiyuanPeng.*;" + "\n");
+		p("import java.sql.*;");  
+		p("import java.util.ArrayList;");
+		p("import SiyuanPeng.*;");
+		p("import Pengfei.Zhang.*;");
 	}
 
 	/**
@@ -70,8 +72,12 @@ public class GenerateNewJAVA {
 	public void generateBean(HashMap<String, String> list, Parameters para) {
 		p("class mfTableBean{");
 		for (sBean k : para.getBeanset()) {
-			if (k.name.contains("_")) {
-				p("public ClassOfAll _" + k.name + " = new ClassOfAll();");
+			String[] afterSplit = k.name.split("_");
+			if (k.type.equals("null")) {
+				p("public String _" + k.name + " = \"Null\";");
+			} else if (k.name.contains("_")) {
+				p("public ClassOfAll _" + afterSplit[0] + "_" + afterSplit[2]
+						+ " = new ClassOfAll();");
 			} else {
 				if (k.type.contains("char")) {
 					p("public String " + k.name + ";");
@@ -181,8 +187,8 @@ public class GenerateNewJAVA {
 			// need update
 			if (ben.name.contains("0_")) {
 				String[] s = ben.name.split("_");
-				p("  					al.get(Pos)._" + ben.name + " = update(al.get(Pos)._"
-						+ ben.name + ", + rs.getInt(\"" + s[s.length - 1]
+				p("  					al.get(Pos)._" + parseName(ben.name) + " = update(al.get(Pos)._"
+						+ parseName(ben.name) + ", + rs.getInt(\"" + s[s.length - 1]
 						+ "\"));");
 				break;
 			}
@@ -200,7 +206,7 @@ public class GenerateNewJAVA {
 			// need update
 			if (ben.name.contains("0_")) {
 				String[] s = ben.name.split("_");
-				p("  					temp._" + ben.name + " = update(temp._" + ben.name
+				p("  					temp._" + parseName(ben.name) + " = update(temp._" + parseName(ben.name)
 						+ ", + rs.getInt(\"" + s[s.length - 1] + "\"));");
 				break;
 			}
@@ -210,10 +216,12 @@ public class GenerateNewJAVA {
 
 		p("			}");
 		// loop 1~n
+		//used to count number of left brace
+		int leftbrace = 0;
 		for (int lop = 1; lop <= para.getN(); lop++) {
 			p("			rs=st.executeQuery(\"select * from sales\");");
 			p("			while(rs.next()){");
-
+			leftbrace++;
 			if (!para.getEMF()) {
 				for (int i = 0; i < para.getV().size(); i++) {
 					String type = list.get(para.getV().get(i));
@@ -230,15 +238,18 @@ public class GenerateNewJAVA {
 
 			p("				for(int i = 0; i < al.size(); i++){");
 			// find if it exist in MF
+			leftbrace++;
 			if (!para.getEMF()) {
 				for (int i = 0; i < para.getV().size(); i++) {
 					if (list.get(para.getV().get(i)).contains("charac")) {
 						p("					if(ga" + String.valueOf(i)
 								+ ".equals(al.get(i)." + para.getV().get(i)
 								+ ")){");
+						leftbrace++;
 					} else {
 						p("					if(ga" + String.valueOf(i) + " == al.get(i)."
 								+ para.getV().get(i) + "){");
+						leftbrace++;
 					}
 				}
 			}
@@ -276,6 +287,7 @@ public class GenerateNewJAVA {
 										+ "\").equals(\""
 										+ con[1].replace(".", "").replace("'",
 												"") + "\")){");
+								leftbrace++;
 							}
 
 							else {
@@ -285,6 +297,7 @@ public class GenerateNewJAVA {
 										+ "\").equals(al.get(i)."
 										+ con[1].replace(".", "").replace("'",
 												"") + ")){");
+								leftbrace++;
 							}
 						} else {
 							// if operator is not =, operator should be <>.
@@ -296,6 +309,7 @@ public class GenerateNewJAVA {
 										+ "\").equals(\""
 										+ con[1].replace(".", "").replace("'",
 												"") + "\")){");
+								leftbrace++;
 							}
 							// else, compare it with member
 							else {
@@ -303,6 +317,7 @@ public class GenerateNewJAVA {
 										+ left[left.length - 1]
 										+ "\").equals(al.get(i)."
 										+ con[1].replace(".", "") + ")){");
+								leftbrace++;
 							}
 
 						}
@@ -362,33 +377,36 @@ public class GenerateNewJAVA {
 								String[] rightCol = rightPart[0].split("_");
 								// here, con[1] should be XXXX - 1
 								if (sign.equals("=")) {
-									p("					if" + "(rs.getInt(\""
-											+ rightCol[1]+ "\") "  + ""
-											+ " == " + "(al.get(i)._" + cons[0]
-											+ ")" + op
-											+ rightPart[1].toString() +"){");
-								}
-								else
-								{
-									p("					if" + "(rs.getInt(\""
-											+ rightCol[1] + "\") "  + ""
-											+ sign + "(al.get(i)._" + cons[0]
-											+ ")" + op
-											+ rightPart[1].toString() +"){");
+									p("					if" + "(rs.getInt(\"" + rightCol[1]
+											+ "\") " + "" + " == "
+											+ "(al.get(i)._" + parseName(cons[0]) + ")"
+											+ op + rightPart[1].toString()
+											+ "){");
+									leftbrace++;
+								} else {
+									p("					if" + "(rs.getInt(\"" + rightCol[1]
+											+ "\") " + "" + sign
+											+ "(al.get(i)._" + parseName(cons[0]) + ")"
+											+ op + rightPart[1].toString()
+											+ "){");
+									leftbrace++;
 								}
 							} else {
 								// if sign is =, change it to ==
 								if (sign.equals("=")) {
 									p("					if(rs.getInt(\""
 											+ left[left.length - 1]
-											+ "\") == al.get(i)._" + cons[0]
+											+ "\") == al.get(i)._" + parseName(cons[0])
 											+ "){");
+									leftbrace++;
 								}
 								// else, compare them
 								else {
-									p("					if(rs.getInt(\""+ left[left.length - 1] 
-											+ "\")"+ sign + "al.get(i)._" + cons[0]
-											+  "){");
+									p("					if(rs.getInt(\""
+											+ left[left.length - 1] + "\")"
+											+ sign + "al.get(i)._" + parseName(cons[0])
+											+ "){");
+									leftbrace++;
 								}
 							}
 						}
@@ -412,9 +430,10 @@ public class GenerateNewJAVA {
 										.split("\\+|\\*|-|/");
 								// here, con[1] should be XXXX - 1
 								p("					if((rs.getInt(\"" + rightPart[0]
-										+ "\") " + op + rightPart[1].toString()
-										+ ") == " + "al.get(i)." + left[1]
-										+ "){");
+										+ "\") " + " == " + "(al.get(i)."
+										+ parseName(left[1]) + op
+										+ rightPart[1].toString() + "))){");
+								leftbrace++;
 
 							}
 							// if right opertend is int, just compare it
@@ -430,6 +449,7 @@ public class GenerateNewJAVA {
 											+ left[left.length - 1] + "\")"
 											+ "==" + "al.get(i)." + con[1]
 											+ "){");
+									leftbrace++;
 								}
 							}
 						}
@@ -441,31 +461,35 @@ public class GenerateNewJAVA {
 			for (sBean sb : para.getF()) {
 				if (sb.name.startsWith(String.valueOf(lop))) {
 					String[] strs = sb.name.split("_");
-					if(sb.name.contains("ALL")){
-						p("						al.get(i)._" + sb.name + " = update(al.get(i)._"
-								+ sb.name + ", 1 );");
-					}
-					else{
-						p("						al.get(i)._" + sb.name + " = update(al.get(i)._"
-								+ sb.name + ", rs.getInt(\"" + strs[2] + "\"));");
+					if (sb.name.contains("ALL")) {
+						p("						al.get(i)._" + parseName(sb.name)
+								+ " = update(al.get(i)._" + parseName(sb.name) + ", 1 );");
+					} else {
+						p("						al.get(i)._" + parseName(sb.name)
+								+ " = update(al.get(i)._" + parseName(sb.name)
+								+ ", rs.getInt(\"" + strs[2] + "\"));");
 					}
 				}
 			}
 			// /
 			// p("						Pos = i;");
-			for (String sig1 : para.getSigma()) {
-				if (sig1.startsWith(String.valueOf(lop))) {
-					p("					}");
-				}
+//			for (String sig1 : para.getSigma()) {
+//				if (sig1.startsWith(String.valueOf(lop))) {
+//					p("					}");
+//				}
+//			}
+//			if (!para.getEMF()) {
+//				for (int i = 0; i < para.getV().size(); i++) {
+//					p("					}");
+//				}
+//			}
+//			// for loop end
+//			//p("				}");
+			for(int i = 0; i < leftbrace; i ++){
+				p("			}");
 			}
-			if (!para.getEMF()) {
-				for (int i = 0; i < para.getV().size(); i++) {
-					p("					}");
-				}
-			}
-			// for loop end
-			p("				}");
-			p("			}");
+			leftbrace = 0;
+			//p("			}");
 		}
 
 		p("		} catch ( Exception e ){");
@@ -500,17 +524,30 @@ public class GenerateNewJAVA {
 
 	public void generatePrint(Parameters pa) {
 		p("public void print(){");
-		pl("\tSystem.out.println(\"");// + pa.getS().get(0).name);
+		pl("\tSystem.out.println(");// + pa.getS().get(0).name);
 		for (int i = 0; i < pa.getS().size(); i++) {
-			pl("\\t\\t" + pa.getS().get(i).name);
+			if(pa.getS().get(i).name.length()< 8){
+				pl("outPutFormat.outPutFormats(\"" + pa.getS().get(i).name+"\", 8) +");
+			}
+			else
+			{
+				pl("outPutFormat.outPutFormats(\"" + pa.getS().get(i).name+"\", "+(pa.getS().get(i).name.length() + 2) + ") +");
+			}
 		}
-		pl("\");");
+		pl(" \" \" );");
 		p("");
 
 		p("			for(mfTableBean mfb : al){");
-		pl("				System.out.println(\" \" ");
+		pl("				System.out.println(\"\" ");
 		for (sBean sb : pa.getS()) {
-			if ((GenerateNewJAVA.isOperator(sb.name))
+			if (sb.type.equals("null")) {
+				if(sb.name.length() <=8){
+					pl(" + " + "outPutFormat.outPutFormats(mfb._" + sb.name+",8)");
+				}
+				else{
+					pl(" + " + "outPutFormat.outPutFormats(mfb._" + sb.name+","+ (sb.name.length()+2) +")");
+				}
+			} else if ((GenerateNewJAVA.isOperator(sb.name))
 					&& (!sb.name.contains("_*"))) {
 				String sss[] = sb.name.split("\\+|-|\\*|/");
 				String op = "";
@@ -525,7 +562,8 @@ public class GenerateNewJAVA {
 				}
 
 				String[] psk = sss[0].split("_");
-				pl(" +\"\\t\\t\" + mfb._" + sss[0] + ".");
+				pl(" + " + "outPutFormat.outPutFormats(mfb._" + parseName(sss[0]) +".");
+				//pl(" +\"\\t\\t\" + mfb._" + parseName(sss[0]) + ".");
 				switch (psk[1]) {
 				case "min":
 					pl("Min");
@@ -545,7 +583,7 @@ public class GenerateNewJAVA {
 				}
 				pl(op);
 				String[] psk2 = sss[1].split("_");
-				pl(" + mfb._" + sss[1] + ".");
+				pl("mfb._" + parseName(sss[1]) + ".");
 				switch (psk[1]) {
 				case "min":
 					pl("Min");
@@ -563,10 +601,15 @@ public class GenerateNewJAVA {
 					pl("getAvg()");
 					break;
 				}
-
+				if(sb.name.length()<=8 ){
+					pl(",8)");
+				}
+				else{
+					pl("," + (sb.name.length()+2)+ ")");
+				}
 			} else if (sb.name.contains("_")) {
 				String[] psk = sb.name.split("_");
-				pl(" +\"\\t\\t\" + mfb._" + sb.name + ".");
+				pl(" + outPutFormat.outPutFormats( mfb._" + parseName(sb.name) + ".");
 				switch (psk[1]) {
 				case "min":
 					pl("Min");
@@ -584,8 +627,19 @@ public class GenerateNewJAVA {
 					pl("getAvg()");
 					break;
 				}
+				if(sb.name.length() <= 8){
+					pl(",8)");
+				}
+				else{
+					pl("," +(sb.name.length() + 2)+")");
+				}
 			} else {
-				pl(" + \"\\t\\t\" + mfb." + sb.name);
+				if(sb.name.length()<=8){
+					pl(" + outPutFormat.outPutFormats(mfb." + sb.name + ",8)");
+				}
+				else{
+					pl(" + outPutFormat.outPutFormats(mfb." + sb.name + "," +(sb.name.length()+2) + ")");
+				}
 			}
 		}
 		pl(");");
@@ -623,6 +677,15 @@ public class GenerateNewJAVA {
 			return true;
 		}
 		return false;
+	}
+
+	public static String parseName(String src) {
+		
+		String[] afterSplit = src.split("_");
+		if(afterSplit.length <= 2){
+			return src;
+		}
+		return afterSplit[0] + "_" + afterSplit[2];
 	}
 
 	public static void pl(String s) {
