@@ -4,19 +4,19 @@ import SiyuanPeng.*;
 
 public class programGenerated {
 	class mfTableBean{
-		int sumforavg_2_quant;
 		int avg_2_quant;
-		String _2_state;
-		int avg_3_quant;
+		int sumforavg_2_quant;
+		int count_3_;
 		int countforavg_2_quant;
-		int avg_1_quant;
-		int sumforavg_3_quant;
-		int countforavg_1_quant;
+		int _1_month;
+		String _4_state;
 		int sumforavg_1_quant;
-		String _1_state;
-		String _3_state;
-		int countforavg_3_quant;
-		String cust;
+		int _2_month;
+		int _3_month;
+		int avg_1_quant;
+		int month;
+		int countforavg_1_quant;
+		String prod;
 	}
 	ArrayList<mfTableBean> al=new ArrayList<>();
 	public static void main(String[] args) {
@@ -32,25 +32,28 @@ public class programGenerated {
 			while(rs.next()){
 				boolean existed=false;
 				for (int i = 0; i < al.size(); i++) {
-					if(rs.getString("cust").equals(al.get(i).cust)){
+					if(rs.getString("prod").equals(al.get(i).prod)){
+					if(rs.getInt("month")==al.get(i).month){
 						existed=true;
 						break;
+					}
 					}
 				}
 				if(!existed){
 					mfTableBean tempbean=new mfTableBean();
-					tempbean.cust=rs.getString("cust");
+					tempbean.prod=rs.getString("prod");
+					tempbean.month=rs.getInt("month");
 					al.add(tempbean);
 				}
 			}
 			rs=st.executeQuery("select * from sales;");
 			while(rs.next()){
 				for (int i = 0; i < al.size(); i++) {
-					if(rs.getString("cust").equals(al.get(i).cust)){
-					if(rs.getString("state").equals("NY")){
+					if(rs.getString("prod").equals(al.get(i).prod)){
+					if(rs.getInt("month")==al.get(i).month-1){
+						al.get(i)._1_month=rs.getInt("month");
 						al.get(i).countforavg_1_quant++;
 						al.get(i).sumforavg_1_quant+=rs.getInt("quant");
-						al.get(i)._1_state=rs.getString("state");
 					}
 					}
 				}
@@ -64,11 +67,11 @@ public class programGenerated {
 			rs=st.executeQuery("select * from sales;");
 			while(rs.next()){
 				for (int i = 0; i < al.size(); i++) {
-					if(rs.getString("cust").equals(al.get(i).cust)){
-					if(rs.getString("state").equals("NJ")){
+					if(rs.getString("prod").equals(al.get(i).prod)){
+					if(rs.getInt("month")==al.get(i).month+1){
 						al.get(i).countforavg_2_quant++;
 						al.get(i).sumforavg_2_quant+=rs.getInt("quant");
-						al.get(i)._2_state=rs.getString("state");
+						al.get(i)._2_month=rs.getInt("month");
 					}
 					}
 				}
@@ -82,42 +85,45 @@ public class programGenerated {
 			rs=st.executeQuery("select * from sales;");
 			while(rs.next()){
 				for (int i = 0; i < al.size(); i++) {
-					if(rs.getString("cust").equals(al.get(i).cust)){
-					if(rs.getString("state").equals("CT")){
-						al.get(i).countforavg_3_quant++;
-						al.get(i).sumforavg_3_quant+=rs.getInt("quant");
-						al.get(i)._3_state=rs.getString("state");
+					if(rs.getString("prod").equals(al.get(i).prod)){
+					if(rs.getInt("month")==al.get(i).month){
+					if(rs.getInt("quant")>al.get(i).avg_1_quant){
+					if(rs.getInt("quant")<al.get(i).avg_2_quant){
+						al.get(i).count_3_++;
+						al.get(i)._3_month=rs.getInt("month");
+					}
+					}
 					}
 					}
 				}
 			}
-			for (mfTableBean bean : al) {
-				if(bean.countforavg_3_quant!=0)
-					bean.avg_3_quant=bean.sumforavg_3_quant/bean.countforavg_3_quant;
-				else
-					bean.avg_3_quant=0;
+			rs=st.executeQuery("select * from sales;");
+			while(rs.next()){
+				for (int i = 0; i < al.size(); i++) {
+						al.get(i)._4_state=rs.getString("state");
+				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 	public void print(){
-			System.out.print("cust.....");
-			System.out.print("avg_1_quant.....");
-			System.out.print("_1_state.....");
-			System.out.print("avg_2_quant.....");
-			System.out.print("_2_state.....");
-			System.out.print("avg_3_quant.....");
-			System.out.print("_3_state.....");
+			System.out.print("		prod");
+			System.out.print("		month");
+			System.out.print("	_1_month");
+			System.out.print("	_2_month");
+			System.out.print("	_3_month");
+			System.out.print("	count_3_");
+			System.out.print("	_4_state");
 			System.out.println();
 		for (int i = 0; i < al.size(); i++) {
-			System.out.print(al.get(i).cust+".....");
-			System.out.print(al.get(i).avg_1_quant+".....");
-			System.out.print(al.get(i)._1_state+".....");
-			System.out.print(al.get(i).avg_2_quant+".....");
-			System.out.print(al.get(i)._2_state+".....");
-			System.out.print(al.get(i).avg_3_quant+".....");
-			System.out.print(al.get(i)._3_state+".....");
+			System.out.print("		"+al.get(i).prod);
+			System.out.print("		"+al.get(i).month);
+			System.out.print("		"+al.get(i)._1_month);
+			System.out.print("		"+al.get(i)._2_month);
+			System.out.print("		"+al.get(i)._3_month);
+			System.out.print("		"+al.get(i).count_3_);
+			System.out.print("		"+al.get(i)._4_state);
 			System.out.println();
 		}
 	}

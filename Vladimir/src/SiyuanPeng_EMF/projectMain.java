@@ -127,7 +127,6 @@ public class projectMain {
 				}else if(f.startsWith("count_0")){
 					p("						al.get(i).count_0_++;");
 				}
-
 			}
 		}
 
@@ -155,6 +154,7 @@ public class projectMain {
 				}
 			}
 		}
+		
 		//Initialize "_0_" and "min_?_"
 		for (String bean : para.getBeanset()) {
 			if(bean.contains("_0_")||bean.startsWith("min")){
@@ -184,7 +184,6 @@ public class projectMain {
 				p("			}");
 			}
 		}
-
 
 		//2nd, 3rd scans and so on
 		//temp0 and temp1
@@ -296,12 +295,15 @@ public class projectMain {
 
 		p("	public void print(){");
 		for (String s : para.getS()) {
-			p("			System.out.print(\""+s+".....\");");
+			if(s.contains("_"))
+			p("			System.out.print(\"\t"+s+"\");");
+			else
+				p("			System.out.print(\"\t\t"+s+"\");");
 		}
 		p("			System.out.println();");
 		p("		for (int i = 0; i < al.size(); i++) {");
 		for (String s : para.getS()) {
-			p("			System.out.print(al.get(i)."+s+"+\".....\");");	
+			p("			System.out.print(\"\t\t\"+al.get(i)."+s+");");	
 		}
 		p("			System.out.println();");
 		p("		}");

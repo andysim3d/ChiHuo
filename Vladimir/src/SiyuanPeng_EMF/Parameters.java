@@ -19,12 +19,12 @@ public class Parameters {
 //	String f="avg_1_quant, max_2_quant";
 //	String sigma="1.month<avg_0_quant";
 
-//	String s="prod, month, _1_month, _2_month, _3_month, count_3_, _4_state";
-//	String n="4";
-//	String v="prod, month";
-//	String f="avg_1_quant, avg_2_quant";
-//	String sigma="_1_prod=prod, _1_month=month-1, _2_prod=prod, _2_month>=month+1, _3_prod=prod, _3_month=month, _3_quant>avg_1_quant, _3_quant<avg_2_quant";
-	
+	String s="prod, month, _1_month, _2_month, _3_month, count_3_, _4_state";
+	String n="4";
+	String v="prod, month";
+	String f="avg_1_quant, avg_2_quant";
+	String sigma="_1_prod=prod, _1_month=month-1, _2_prod=prod, _2_month=month+1, _3_prod=prod, _3_month=month, _3_quant>avg_1_quant, _3_quant<avg_2_quant";
+//	
 //	String s="cust, prod, count_0_, count_1_, count_2_";
 //	String n="2";
 //	String v="cust, prod";
@@ -37,12 +37,11 @@ public class Parameters {
 //	String f="count_0_, count_1_, count_2_";
 //	String sigma="_1_cust=cust, _2_cust!=cust";
 	
-	
-	String s="cust, avg_1_quant, _1_state, avg_2_quant, _2_state, avg_3_quant, _3_state";
-	String n="3";
-	String v="cust";
-	String f="avg_1_quant, avg_2_quant, avg_3_quant";
-	String sigma="_1_cust=cust, _1_state=NY, _2_cust=cust, _2_state=NJ, _3_cust=cust, _3_state=CT";
+//	String s="cust, avg_1_quant, _1_state, avg_2_quant, _2_state, avg_3_quant, _3_state";
+//	String n="3";
+//	String v="cust";
+//	String f="avg_1_quant, avg_2_quant, avg_3_quant";
+//	String sigma="_1_cust=cust, _1_state=NY, _2_cust=cust, _2_state=NJ, _3_cust=cust, _3_state=CT";
 	
 	public void parse(){
 		if(s.contains(",")){
