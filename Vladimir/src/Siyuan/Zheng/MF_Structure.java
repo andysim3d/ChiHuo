@@ -2,6 +2,8 @@ package Siyuan.Zheng;
 
 import java.util.ArrayList;
 
+import SiyuanPeng.AggrateFunction;
+
 public class MF_Structure {
 
 

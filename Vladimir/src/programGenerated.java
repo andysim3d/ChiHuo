@@ -32,14 +32,14 @@ return 0;
 }
 }
 class mfTableBean{
-public String prod;
-public String cust;
-public ClassOfAll _2_quant = new ClassOfAll();
 public ClassOfAll _3_quant = new ClassOfAll();
-//public ClassOfAll _2_quant = new ClassOfAll();
 public int year;
+public String cust;
+public int _1_year$;
 public ClassOfAll _0_quant = new ClassOfAll();
 public ClassOfAll _1_quant = new ClassOfAll();
+public ClassOfAll _2_quant = new ClassOfAll();
+public String prod;
 }
 public class programGenerated {
 	Connection conn=null;
@@ -97,6 +97,7 @@ public void mfTableGenerator(){
 			rs=st.executeQuery("select * from sales");
 			while(rs.next()){
 				for(int i = 0; i < al.size(); i++){
+						al.get(i)._2_quant = update(al.get(i)._2_quant, rs.getInt("quant"));
 			}
 			}
 			rs=st.executeQuery("select * from sales");
@@ -131,8 +132,8 @@ finally{
 		return all;
 	}
 public void print(){
-	System.out.println(outPutFormat.outPutFormats("cust", 8) +" " +outPutFormat.outPutFormats("prod", 8) +" " +outPutFormat.outPutFormats("year", 8) +" " +outPutFormat.outPutFormats("1_max_quant", 13) +" " +outPutFormat.outPutFormats("2_avg_quant", 13) +" " +outPutFormat.outPutFormats("3_sum_quant", 13) +" " + " "  );
+	System.out.println(outPutFormat.outPutFormats("cust", 8) +" " +outPutFormat.outPutFormats("prod", 8) +" " +outPutFormat.outPutFormats("year", 8) +" " +outPutFormat.outPutFormats("1_year$", 8) +" " +outPutFormat.outPutFormats("1_max_quant", 13) +" " +outPutFormat.outPutFormats("2_avg_quant", 13) +" " +outPutFormat.outPutFormats("3_sum_quant", 13) +" " + " " );
 			for(mfTableBean mfb : al){
-				System.out.println(""  + outPutFormat.outPutFormats(mfb.cust,8)+" " + outPutFormat.outPutFormats(mfb.prod,8)+" " + outPutFormat.outPutFormats(mfb.year,8)+" " + outPutFormat.outPutFormats( mfb._1_quant.Max,13)+" " + outPutFormat.outPutFormats( mfb._2_quant.getAvg(),13)+" " + outPutFormat.outPutFormats( mfb._3_quant.Sum,13)+" ");}
+				System.out.println(""  + outPutFormat.outPutFormats(mfb.cust,8)+" " + outPutFormat.outPutFormats(mfb.prod,8)+" " + outPutFormat.outPutFormats(mfb.year,8)+" " + outPutFormat.outPutFormats( mfb._1_year$,8)+" " + outPutFormat.outPutFormats( mfb._1_quant.Max,13)+" " + outPutFormat.outPutFormats( mfb._2_quant.getAvg(),13)+" " + outPutFormat.outPutFormats( mfb._3_quant.Sum,13)+" ");}
 }
 }

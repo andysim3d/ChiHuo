@@ -1,4 +1,4 @@
-package Siyuan.Zheng;
+package SiyuanPeng;
 
 import java.io.BufferedReader;
 
@@ -14,7 +14,8 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
-import SiyuanPeng.Util;
+import Siyuan.Zheng.Parameters;
+import Siyuan.Zheng.sBean;
 
 public class ParaseParameters {
 	public static Parameters ParaseInput(){
@@ -61,8 +62,18 @@ public class ParaseParameters {
 					if (name[i].contains("_")) {
 						String [] columnName = name[i].split("_");
 						t.name = name[i];
+						//if name can be split into 2 parts, means it's not a aggreate function
+						if(columnName.length == 2){
+							t.name = name[i] + "$";
+							try{
+							t.type = ut.list.get(columnName[1]);
+							}
+							catch(Exception e){
+								t.type = "Null";
+							}
+						}
 						//if contains, set to it's type
-						if(ut.list.containsKey(columnName[2]))
+						else if(ut.list.containsKey(columnName[2]))
 						{
 							t.type = ut.list.get(columnName[2]);
 						}

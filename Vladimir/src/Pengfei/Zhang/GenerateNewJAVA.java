@@ -8,9 +8,9 @@ import java.util.regex.Pattern;
 
 import Siyuan.Zheng.MF_Structure;
 import Siyuan.Zheng.Parameters;
-import Siyuan.Zheng.ParaseMF;
-import Siyuan.Zheng.ParaseParameters;
 import Siyuan.Zheng.sBean;
+import SiyuanPeng.ParaseMF;
+import SiyuanPeng.ParaseParameters;
 import SiyuanPeng.Util;
 
 public class GenerateNewJAVA {
@@ -68,6 +68,7 @@ public class GenerateNewJAVA {
 		p("import java.util.ArrayList;");
 		p("import SiyuanPeng.*;");
 		p("import Pengfei.Zhang.*;");
+		p("import Siyuan.Zheng.*;");
 	}
 
 	/**
@@ -80,8 +81,18 @@ public class GenerateNewJAVA {
 			if (k.type.equals("null")) {
 				p("public String _" + k.name + " = \"Null\";");
 			} else if (k.name.contains("_")) {
-				p("public ClassOfAll _" + afterSplit[0] + "_" + afterSplit[2]
+				if(afterSplit.length == 2){
+					if(k.type.contains("inte")){
+					p("public int _" + k.name +";");
+					}
+					else{
+						p("public String _" + k.name + ";");
+					}
+				}
+				else{	
+					p("public ClassOfAll _" + afterSplit[0] + "_" + afterSplit[2]
 						+ " = new ClassOfAll();");
+				}
 			} else {
 				if (k.type.contains("char")) {
 					p("public String " + k.name + ";");
@@ -124,7 +135,11 @@ public class GenerateNewJAVA {
 		p("}");
 		p("}");
 	}
-
+	/**
+	 * 
+	 * @param list
+	 * @param para
+	 */
 	public void generateMain(HashMap<String, String> list, Parameters para) {
 		// generate connection and arraylist to store data;
 		p("public class programGenerated {");
@@ -140,7 +155,12 @@ public class GenerateNewJAVA {
 		p("		main.print();");
 		p("	}");
 	}
-
+	/**
+	 * 
+	 * @param list
+	 * @param para
+	 * @param mf
+	 */
 	public void generateMfTable(HashMap<String, String> list, Parameters para,
 			MF_Structure mf) {
 		p("public void mfTableGenerator(){");
@@ -613,7 +633,10 @@ public class GenerateNewJAVA {
 				else{
 					pl("," + (sb.name.length()+2)+ ")");
 				}
-			} else if (sb.name.contains("_")) {
+			} else if(sb.name.contains("$")){
+				pl(" + outPutFormat.outPutFormats( mfb._" + parseName(sb.name) + "");
+			}
+			else if (sb.name.contains("_")) {
 				String[] psk = sb.name.split("_");
 				pl(" + outPutFormat.outPutFormats( mfb._" + parseName(sb.name) + ".");
 				switch (psk[1]) {

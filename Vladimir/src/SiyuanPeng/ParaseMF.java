@@ -1,7 +1,11 @@
-package Siyuan.Zheng;
+package SiyuanPeng;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import Siyuan.Zheng.MF_Structure;
+import Siyuan.Zheng.Parameters;
+import Siyuan.Zheng.sBean;
 
 
 public class ParaseMF {

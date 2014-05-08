@@ -3,7 +3,7 @@ package testModel;
 import java.util.ArrayList;
 
 import Pengfei.Zhang.GenerateNewJAVA;
-import Siyuan.Zheng.AggrateFunction;
+import SiyuanPeng.AggrateFunction;
 
 import org.junit.Test;
 
