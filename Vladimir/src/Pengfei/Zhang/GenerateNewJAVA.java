@@ -20,6 +20,10 @@ public class GenerateNewJAVA {
 	public boolean EMF;
 
 	// main//
+	/**
+	 * main function
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		try {
 			// init the file writer
@@ -103,7 +107,9 @@ public class GenerateNewJAVA {
 		}
 		p("}");
 	}
-
+	/**
+	 * generate data structure
+	 */
 	public void generateGeneralDS() {
 		p("class ClassOfAll{");
 		p("public String incase = \"\";");
@@ -135,6 +141,7 @@ public class GenerateNewJAVA {
 		p("}");
 		p("}");
 	}
+	
 	/**
 	 * 
 	 * @param list
@@ -155,6 +162,7 @@ public class GenerateNewJAVA {
 		p("		main.print();");
 		p("	}");
 	}
+
 	/**
 	 * 
 	 * @param list
@@ -546,6 +554,7 @@ public class GenerateNewJAVA {
 		// //lost a brace here
 	}
 
+	
 	/**
 	 * print method. print the strings to the file and the console.
 	 */
@@ -559,6 +568,11 @@ public class GenerateNewJAVA {
 		System.out.println(s);
 	}
 
+	
+	/**
+	 * 
+	 * @param pa
+	 */
 	public void generatePrint(Parameters pa) {
 		p("public void print(){");
 		pl("\tSystem.out.println(");// + pa.getS().get(0).name);
@@ -697,6 +711,12 @@ public class GenerateNewJAVA {
 		p("}");
 	}
 
+	
+	/**
+	 * 
+	 * @param str
+	 * @return
+	 */
 	public static boolean isNumeric(String str) {
 		for (int i = str.length(); --i >= 0;) {
 			if (!Character.isDigit(str.charAt(i))) {
@@ -706,6 +726,9 @@ public class GenerateNewJAVA {
 		return true;
 	}
 
+	/**
+	 * 
+	 */
 	public void generateUpdate() {
 		p("	public ClassOfAll update(ClassOfAll all, int value){");
 		p("		if(all.Max < value){");
@@ -720,6 +743,11 @@ public class GenerateNewJAVA {
 		p("	}");
 	}
 
+	/**
+	 * 
+	 * @param str
+	 * @return
+	 */
 	public static boolean isOperator(String str) {
 		if ((str.contains("+")) || (str.contains("-")) || (str.contains("*"))
 				|| (str.contains("/"))) {
@@ -728,6 +756,11 @@ public class GenerateNewJAVA {
 		return false;
 	}
 
+	/**
+	 * 
+	 * @param src
+	 * @return
+	 */
 	public static String parseName(String src) {
 		
 		String[] afterSplit = src.split("_");
@@ -737,6 +770,10 @@ public class GenerateNewJAVA {
 		return afterSplit[0] + "_" + afterSplit[2];
 	}
 
+	/**
+	 * 
+	 * @param s
+	 */
 	public static void pl(String s) {
 		try {
 			fw.append(s);
