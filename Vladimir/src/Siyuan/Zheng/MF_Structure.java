@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import SiyuanPeng.AggrateFunction;
 
 public class MF_Structure {
-
-
 	public ArrayList<String> grouping_attributes;
 	public ArrayList<AggrateFunction> aggrate_function;
 	

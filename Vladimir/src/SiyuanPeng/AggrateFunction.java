@@ -13,5 +13,4 @@ public class AggrateFunction {
 		this.funcColum = "";
 		this.func = "";
 	}
-
 }

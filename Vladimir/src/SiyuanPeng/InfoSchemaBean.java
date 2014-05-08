@@ -1,3 +1,7 @@
+/**
+ * Basic bean to store the tuples got from the information_schema.
+ */
+
 package SiyuanPeng;
 public class InfoSchemaBean {
 	private String table_name;

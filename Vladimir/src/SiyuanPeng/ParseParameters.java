@@ -25,7 +25,7 @@ public class ParseParameters {
 		    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));  
 			String s = br.readLine();
 			s = s.replace(" ", "");
-			Util ut = new Util();
+			UtilInfoSchema ut = new UtilInfoSchema();
 			ut.UtilGenerator();
 
 			String[] name = null;// = //new ArrayList<>();

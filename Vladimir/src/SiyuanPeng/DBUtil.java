@@ -1,3 +1,8 @@
+/**
+ * Singleton class to connect postgres database through JDBC
+ * call .getInstance() to get the singleton object and call .close() to disconnect.
+ */
+
 package SiyuanPeng;
 import java.sql.*;
 
@@ -10,18 +15,25 @@ public class DBUtil {
 	private static DBUtil instance=null;
 	private Connection con=null;
 
-	//private constructor in order to utilize the singleton design patter
+	/**
+	 * private constructor in order to utilize the singleton design patter
+	 */
 	private DBUtil(){
 	}
 	
-	//Singleton design pattern to save the resource
+	/**
+	 * Singleton design pattern to save the resource
+	 * @return
+	 */
 	public static DBUtil getInstance(){
 		if(null==instance)
 			instance=new DBUtil();
 		return instance;
 	}
 
-	//connect the database
+	/**
+	 * connect the database
+	 */
 	private void open(){
 		try {
 			Class.forName("org.postgresql.Driver");     //Loads the required driver
@@ -40,13 +52,18 @@ public class DBUtil {
 		}
 	}
 
-	//get the connection through the only one object
+	/**
+	 * get the connection through the only one object
+	 */
 	public Connection getConnection(){
 		if(con==null)
 			open();
 		return con;
 	}
 
+	/**
+	 * disconnect the database
+	 */
 	public void close(){
 		try {
 			con.close();
