@@ -17,7 +17,7 @@ import java.util.TreeSet;
 import Siyuan.Zheng.Parameters;
 import Siyuan.Zheng.sBean;
 
-public class ParaseParameters {
+public class ParseParameters {
 	public static Parameters ParaseInput(){
 	    try {
 			Parameters temp = new Parameters();

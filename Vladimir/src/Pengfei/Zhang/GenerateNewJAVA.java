@@ -9,8 +9,8 @@ import java.util.regex.Pattern;
 import Siyuan.Zheng.MF_Structure;
 import Siyuan.Zheng.Parameters;
 import Siyuan.Zheng.sBean;
-import SiyuanPeng.ParaseMF;
-import SiyuanPeng.ParaseParameters;
+import SiyuanPeng.ParseMF;
+import SiyuanPeng.ParseParameters;
 import SiyuanPeng.Util;
 
 public class GenerateNewJAVA {
@@ -30,9 +30,9 @@ public class GenerateNewJAVA {
 
 		// paramters & mf_structures
 		Parameters para = new Parameters();
-		para = ParaseParameters.ParaseInput();
+		para = ParseParameters.ParaseInput();
 		MF_Structure mf_s = new MF_Structure();
-		mf_s = ParaseMF.mfParase(para);
+		mf_s = ParseMF.mfParase(para);
 		//
 		// get information_schema
 		Util util = new Util();
@@ -110,7 +110,7 @@ public class GenerateNewJAVA {
 		p("public int Max = 0;");
 		p("public int Min = 99999;");
 		p("public int Count = 0;");
-		p("public double Sum = 0;");
+		p("public int Sum = 0;");
 		p("public int Sum_of_AVG = 0;");
 		p("public int Count_of_AVG = 0;");
 		p("public int AVG = 0;");
@@ -125,8 +125,8 @@ public class GenerateNewJAVA {
 		p("AVG = 0;");
 		p("}");
 
-		p("public double getAvg(){");
-		p("	double sum = this.Sum;");
+		p("public int getAvg(){");
+		p("	int sum = this.Sum;");
 		p("if(Count == 0){");
 		p("return 0;");
 		p("}");
@@ -483,8 +483,8 @@ public class GenerateNewJAVA {
 			}
 
 			for (sBean sb : para.getF()) {
+				String[] strs = sb.name.split("_");
 				if (sb.name.startsWith(String.valueOf(lop))) {
-					String[] strs = sb.name.split("_");
 					if (sb.name.contains("ALL")) {
 						p("						al.get(i)._" + parseName(sb.name)
 								+ " = update(al.get(i)._" + parseName(sb.name) + ", 1 );");
@@ -494,26 +494,39 @@ public class GenerateNewJAVA {
 								+ ", rs.getInt(\"" + strs[2] + "\"));");
 					}
 				}
+				for(sBean t : para.getS()){
+					if(t.name.contains("$") && t.name.startsWith(String.valueOf(lop))){
+						pl("			if(al.get(i)._"+ parseName(sb.name) + ".");	
+						switch(strs[1]){
+						case "min":
+							pl("Min");
+							break;
+						case "max":
+							pl("Max");
+							break;
+						case "count":
+							pl("Count");
+							break;
+						case "sum":
+							pl("Sum");
+							break;
+						case "avg":
+							pl("getAvg()");
+							break;
+						}
+						pl(" == rs.getInt(\""+ strs[2]+"\"))");
+						p("{");
+						String [] column = t.name.split("_");
+						p("al.get(i)._" + t.name +"= rs.getInt(\""+ column[1].replace("$", "") +"\");");
+						p("}");
+						
+					}
+				}
 			}
-			// /
-			// p("						Pos = i;");
-//			for (String sig1 : para.getSigma()) {
-//				if (sig1.startsWith(String.valueOf(lop))) {
-//					p("					}");
-//				}
-//			}
-//			if (!para.getEMF()) {
-//				for (int i = 0; i < para.getV().size(); i++) {
-//					p("					}");
-//				}
-//			}
-//			// for loop end
-//			//p("				}");
 			for(int i = 0; i < leftbrace; i ++){
 				p("			}");
 			}
 			leftbrace = 0;
-			//p("			}");
 		}
 
 		p("		} catch ( Exception e ){");
@@ -634,7 +647,13 @@ public class GenerateNewJAVA {
 					pl("," + (sb.name.length()+2)+ ")");
 				}
 			} else if(sb.name.contains("$")){
-				pl(" + outPutFormat.outPutFormats( mfb._" + parseName(sb.name) + "");
+				pl(" + outPutFormat.outPutFormats( mfb._" + parseName(sb.name) + ",");
+				if(sb.name.length() <=8){
+					pl("8)");
+				}
+				else{
+					pl(""+ (sb.name.length() +2) + ")");
+				}
 			}
 			else if (sb.name.contains("_")) {
 				String[] psk = sb.name.split("_");

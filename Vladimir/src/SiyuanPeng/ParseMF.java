@@ -8,7 +8,7 @@ import Siyuan.Zheng.Parameters;
 import Siyuan.Zheng.sBean;
 
 
-public class ParaseMF {
+public class ParseMF {
 	public static MF_Structure mfParase(Siyuan.Zheng.Parameters pa){
 		MF_Structure temp = new MF_Structure();
 		//have n tuples
