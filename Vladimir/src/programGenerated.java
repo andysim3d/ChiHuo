@@ -32,10 +32,11 @@ return 0;
 }
 }
 class mfTableBean{
-public String cust;
-public int _1_quant$;
+public int month;
+public ClassOfAll _1_quant = new ClassOfAll();
 public ClassOfAll _0_quant = new ClassOfAll();
-public String _name = "Null";
+public String cust;
+public ClassOfAll _2_quant = new ClassOfAll();
 }
 public class programGenerated {
 	Connection conn=null;
@@ -57,10 +58,13 @@ public void mfTableGenerator(){
 			while(rs.next()){
 				boolean exist = false;
 				String ga0 = rs.getString("cust");
+				int ga1 = rs.getInt("month");
 				for(int i = 0; i < al.size(); i++){
 					if(ga0.equals(al.get(i).cust)){
+					if(ga1 == al.get(i).month){
 						Pos = i;
 						exist =true;
+					}
 					}
 				}
 				if(exist){
@@ -70,6 +74,7 @@ public void mfTableGenerator(){
 				else{
 					mfTableBean temp = new mfTableBean();
 					temp.cust = ga0;
+					temp.month = ga1;
   					temp._0_quant = update(temp._0_quant, + rs.getInt("quant"));
 					al.add(temp);
 				}
@@ -77,10 +82,20 @@ public void mfTableGenerator(){
 			rs=st.executeQuery("select * from sales");
 			while(rs.next()){
 				for(int i = 0; i < al.size(); i++){
-					if(rs.getInt("quant") == al.get(i)._0_quant.getAvg()){
-			if(al.get(i)._0_quant.getAvg() == rs.getInt("quant")){
-al.get(i)._1_quant$= rs.getInt("quant");
-}
+					if(rs.getString("cust").equals(al.get(i).cust)){
+					if(rs.getInt("month")<al.get(i).month){
+						al.get(i)._1_quant = update(al.get(i)._1_quant, rs.getInt("quant"));
+			}
+			}
+			}
+			}
+			rs=st.executeQuery("select * from sales");
+			while(rs.next()){
+				for(int i = 0; i < al.size(); i++){
+					if(rs.getString("cust").equals(al.get(i).cust)){
+					if(rs.getInt("month")>al.get(i).month){
+						al.get(i)._2_quant = update(al.get(i)._2_quant, rs.getInt("quant"));
+			}
 			}
 			}
 			}
@@ -108,8 +123,8 @@ finally{
 		return all;
 	}
 public void print(){
-	System.out.println(outPutFormat.outPutFormats("cust", 8) +" " +outPutFormat.outPutFormats("name", 8) +" " +outPutFormat.outPutFormats("0_avg_quant", 13) +" " +outPutFormat.outPutFormats("1_quant$", 10) +" " + " " );
+	System.out.println(outPutFormat.outPutFormats("cust", 8) +" " +outPutFormat.outPutFormats("month", 8) +" " +outPutFormat.outPutFormats("0_avg_quant", 13) +" " +outPutFormat.outPutFormats("1_avg_quant", 13) +" " +outPutFormat.outPutFormats("2_avg_quant", 13) +" " + " " );
 			for(mfTableBean mfb : al){
-				System.out.println(""  + outPutFormat.outPutFormats(mfb.cust,8)+" " + outPutFormat.outPutFormats(mfb._name,8)+" " + outPutFormat.outPutFormats( mfb._0_quant.getAvg(),13)+" " + outPutFormat.outPutFormats( mfb._1_quant$,8)+" ");}
+				System.out.println(""  + outPutFormat.outPutFormats(mfb.cust,8)+" " + outPutFormat.outPutFormats(mfb.month,8)+" " + outPutFormat.outPutFormats( mfb._0_quant.getAvg(),13)+" " + outPutFormat.outPutFormats( mfb._1_quant.getAvg(),13)+" " + outPutFormat.outPutFormats( mfb._2_quant.getAvg(),13)+" ");}
 }
 }

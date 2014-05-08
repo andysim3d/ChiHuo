@@ -356,6 +356,7 @@ public class GenerateNewJAVA {
 					}
 
 					else {
+						
 						// else, if left is integer, right could be _0_
 						// if right has ., it has _
 						if (con[1].contains(".")) {
@@ -471,18 +472,21 @@ public class GenerateNewJAVA {
 							// if right opertend is int, just compare it
 
 							// if operater
-							else {
-								if (isNumeric(con[1])) {
-									p("					if(rs.getInt(\""
-											+ left[left.length - 1] + "\")"
-											+ "==" + " " + con[1] + "){");
-								} else {
-									p("					if(rs.getInt(\""
-											+ left[left.length - 1] + "\")"
-											+ "==" + "al.get(i)." + con[1]
-											+ "){");
-									leftbrace++;
-								}
+						
+						}
+						////////
+						
+						else {
+							if (isNumeric(con[1])) {
+								p("					if(rs.getInt(\""
+										+ left[left.length - 1] + "\")"
+										+ "==" + " " + con[1] + "){");
+							} else {
+								p("					if(rs.getInt(\""
+										+ left[left.length - 1] + "\")"
+										+ sign + "al.get(i)." + con[1]
+										+ "){");
+								leftbrace++;
 							}
 						}
 					}
