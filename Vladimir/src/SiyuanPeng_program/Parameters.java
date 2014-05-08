@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import Pengfei.Zhang.sBean;
+import Siyuan.Zheng.sBean;
 
 public class Parameters {
 	private ArrayList<sBean> S=new ArrayList<>();//just be used for print

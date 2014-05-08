@@ -1,4 +1,4 @@
-package Pengfei.Zhang;
+package Siyuan.Zheng;
 
 import java.io.BufferedReader;
 import Pengfei.Zhang.GenerateNewJAVA;

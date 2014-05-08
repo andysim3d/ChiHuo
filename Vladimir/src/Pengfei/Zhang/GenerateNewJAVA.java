@@ -6,6 +6,10 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import Siyuan.Zheng.MF_Structure;
+import Siyuan.Zheng.ParaseMF;
+import Siyuan.Zheng.ParaseParameters;
+import Siyuan.Zheng.sBean;
 import SiyuanPeng.Util;
 import SiyuanPeng_program.Parameters;
 
