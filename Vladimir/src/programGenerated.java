@@ -1,9 +1,8 @@
 import java.sql.*;
 import java.util.ArrayList;
-
-import Siyuan.Zheng.outPutFormat;
 import SiyuanPeng.*;
 import Pengfei.Zhang.*;
+import Siyuan.Zheng.*;
 class ClassOfAll{
 public String incase = "";
 public int Max = 0;
@@ -33,13 +32,14 @@ return 0;
 }
 }
 class mfTableBean{
-public String _sale = "Null";
+public String prod;
+public String cust;
+public ClassOfAll _2_quant = new ClassOfAll();
+public ClassOfAll _3_quant = new ClassOfAll();
+//public ClassOfAll _2_quant = new ClassOfAll();
+public int year;
 public ClassOfAll _0_quant = new ClassOfAll();
 public ClassOfAll _1_quant = new ClassOfAll();
-public ClassOfAll _2_quant = new ClassOfAll();
-public ClassOfAll _1_year = new ClassOfAll();
-public String cust;
-public int month;
 }
 public class programGenerated {
 	Connection conn=null;
@@ -61,12 +61,15 @@ public void mfTableGenerator(){
 			while(rs.next()){
 				boolean exist = false;
 				String ga0 = rs.getString("cust");
-				int ga1 = rs.getInt("month");
+				String ga1 = rs.getString("prod");
+				int ga2 = rs.getInt("year");
 				for(int i = 0; i < al.size(); i++){
 					if(ga0.equals(al.get(i).cust)){
-					if(ga1 == al.get(i).month){
+					if(ga1.equals(al.get(i).prod)){
+					if(ga2 == al.get(i).year){
 						Pos = i;
 						exist =true;
+					}
 					}
 					}
 				}
@@ -77,7 +80,8 @@ public void mfTableGenerator(){
 				else{
 					mfTableBean temp = new mfTableBean();
 					temp.cust = ga0;
-					temp.month = ga1;
+					temp.prod = ga1;
+					temp.year = ga2;
   					temp._0_quant = update(temp._0_quant, + rs.getInt("quant"));
 					al.add(temp);
 				}
@@ -85,25 +89,22 @@ public void mfTableGenerator(){
 			rs=st.executeQuery("select * from sales");
 			while(rs.next()){
 				for(int i = 0; i < al.size(); i++){
-					if(rs.getString("cust").equals(al.get(i).cust)){
+					if(rs.getInt("quant")>al.get(i)._0_quant.getAvg()){
 						al.get(i)._1_quant = update(al.get(i)._1_quant, rs.getInt("quant"));
-						al.get(i)._1_year = update(al.get(i)._1_year, rs.getInt("year"));
 			}
 			}
 			}
 			rs=st.executeQuery("select * from sales");
 			while(rs.next()){
 				for(int i = 0; i < al.size(); i++){
-					if(rs.getString("cust").equals(al.get(i).cust)){
-					if(rs.getInt("quant")>al.get(i)._1_quant.getAvg()){
-						al.get(i)._2_quant = update(al.get(i)._2_quant, rs.getInt("quant"));
-			}
-			}
 			}
 			}
 			rs=st.executeQuery("select * from sales");
 			while(rs.next()){
 				for(int i = 0; i < al.size(); i++){
+					if(rs.getString("state").equals("CT")){
+						al.get(i)._3_quant = update(al.get(i)._3_quant, rs.getInt("quant"));
+			}
 			}
 			}
 		} catch ( Exception e ){
@@ -130,8 +131,8 @@ finally{
 		return all;
 	}
 public void print(){
-	System.out.println(outPutFormat.outPutFormats("cust", 8) +outPutFormat.outPutFormats("month", 8) +outPutFormat.outPutFormats("sale", 8) +outPutFormat.outPutFormats("1_avg_quant", 13) +outPutFormat.outPutFormats("0_avg_quant", 13) +outPutFormat.outPutFormats("2_avg_quant", 13) +outPutFormat.outPutFormats("1_avg_year", 12) + " " );
+	System.out.println(outPutFormat.outPutFormats("cust", 8) +" " +outPutFormat.outPutFormats("prod", 8) +" " +outPutFormat.outPutFormats("year", 8) +" " +outPutFormat.outPutFormats("1_max_quant", 13) +" " +outPutFormat.outPutFormats("2_avg_quant", 13) +" " +outPutFormat.outPutFormats("3_sum_quant", 13) +" " + " "  );
 			for(mfTableBean mfb : al){
-				System.out.println(""  + outPutFormat.outPutFormats(mfb.cust,8) + outPutFormat.outPutFormats(mfb.month,8) + outPutFormat.outPutFormats(mfb._sale,8) + outPutFormat.outPutFormats( mfb._1_quant.getAvg(),13) + outPutFormat.outPutFormats( mfb._0_quant.getAvg(),13) + outPutFormat.outPutFormats( mfb._2_quant.getAvg(),13) + outPutFormat.outPutFormats( mfb._1_year.getAvg(),12));}
+				System.out.println(""  + outPutFormat.outPutFormats(mfb.cust,8)+" " + outPutFormat.outPutFormats(mfb.prod,8)+" " + outPutFormat.outPutFormats(mfb.year,8)+" " + outPutFormat.outPutFormats( mfb._1_quant.Max,13)+" " + outPutFormat.outPutFormats( mfb._2_quant.getAvg(),13)+" " + outPutFormat.outPutFormats( mfb._3_quant.Sum,13)+" ");}
 }
 }

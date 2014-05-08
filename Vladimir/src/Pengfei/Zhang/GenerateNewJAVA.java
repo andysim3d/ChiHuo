@@ -537,7 +537,9 @@ public class GenerateNewJAVA {
 			{
 				pl("outPutFormat.outPutFormats(\"" + pa.getS().get(i).name+"\", "+(pa.getS().get(i).name.length() + 2) + ") +");
 			}
+			pl("\" \" +");
 		}
+		//pl(" \" \"");
 		pl(" \" \" );");
 		p("");
 
@@ -645,6 +647,7 @@ public class GenerateNewJAVA {
 					pl(" + outPutFormat.outPutFormats(mfb." + sb.name + "," +(sb.name.length()+2) + ")");
 				}
 			}
+			pl("+\" \"");
 		}
 		pl(");");
 		p("}");
