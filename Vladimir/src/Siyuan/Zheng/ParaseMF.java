@@ -5,7 +5,7 @@ import java.util.Arrays;
 
 
 public class ParaseMF {
-	public static MF_Structure mfParase(SiyuanPeng_program.Parameters pa){
+	public static MF_Structure mfParase(Siyuan.Zheng.Parameters pa){
 		MF_Structure temp = new MF_Structure();
 		//have n tuples
 		ArrayList<AggrateFunction> temp_tuples = new ArrayList<>();

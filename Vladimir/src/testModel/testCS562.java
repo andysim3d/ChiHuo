@@ -9,7 +9,7 @@ import org.junit.Test;
 
 public class testCS562 {
 
-	private SiyuanPeng_program.Parameters pa ;
+	private Siyuan.Zheng.Parameters pa ;
 	
 //	public testCS562(){
 

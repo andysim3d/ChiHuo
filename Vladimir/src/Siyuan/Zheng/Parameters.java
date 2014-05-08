@@ -1,10 +1,8 @@
-package SiyuanPeng_program;
+package Siyuan.Zheng;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
-
-import Siyuan.Zheng.sBean;
 
 public class Parameters {
 	private ArrayList<sBean> S=new ArrayList<>();//just be used for print

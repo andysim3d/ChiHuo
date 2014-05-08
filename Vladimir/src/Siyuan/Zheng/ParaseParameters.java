@@ -1,7 +1,9 @@
 package Siyuan.Zheng;
 
 import java.io.BufferedReader;
+
 import Pengfei.Zhang.GenerateNewJAVA;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -13,7 +15,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import SiyuanPeng.Util;
-import SiyuanPeng_program.Parameters;
 
 public class ParaseParameters {
 	public static Parameters ParaseInput(){
