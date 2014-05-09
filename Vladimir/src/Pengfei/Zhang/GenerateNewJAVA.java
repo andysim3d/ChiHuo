@@ -324,11 +324,49 @@ public class GenerateNewJAVA {
 
 							else {
 								// else, compare it with member
+								// if has operator
+								if(isOperator(con[1]))
+								{
+									
+									String [] rightOperend = con[1].split("//+|-|//*|/");
+									String oper = "";
+									if(con[1].contains("+")){
+										oper = "+";
+									}
+									if(con[1].contains("-")){
+										oper = "-";
+									}
+									if(con[1].contains("*")){
+										oper = "*";
+									}
+									if(con[1].contains("/")){
+										oper = "/";
+									}
+									pl("					if(rs.getInt(\""
+											+ left[left.length - 1]
+											+ "\") == (");
+									
+									pl(ParseAggregate(rightOperend[0]));
+									pl(oper);
+									pl(ParseAggregate(rightOperend[1]));
+									pl(		")){");
+								}
+								else{///
+									///
+									p("					if(rs.getString(\""
+											+ left[left.length - 1]
+											+ "\").equals("
+											+ ParseAggregate(con[1].replace(".", "").replace("'",
+													"")) + ")){");
+									
+								/*	
 								p("					if(rs.getString(\""
 										+ left[left.length - 1]
-										+ "\").equals(al.get(i)."
+										+ "\").equals(\""
 										+ con[1].replace(".", "").replace("'",
-												"") + ")){");
+												"") + "\")){");
+								//*/
+								}
 								leftbrace++;
 							}
 						} else {
@@ -345,10 +383,20 @@ public class GenerateNewJAVA {
 							}
 							// else, compare it with member
 							else {
+								/////
+								if(con[1].contains("_")){
 								p("					if(!rs.getString(\""
 										+ left[left.length - 1]
-										+ "\").equals(al.get(i)."
+										+ "\").equals(al.get(i)._"
 										+ con[1].replace(".", "") + ")){");
+								}
+								else
+								{
+									p("					if(!rs.getString(\""
+											+ left[left.length - 1]
+											+ "\").equals(al.get(i)."
+											+ con[1].replace(".", "") + ")){");
+								}
 								leftbrace++;
 							}
 
@@ -484,7 +532,7 @@ public class GenerateNewJAVA {
 							} else {
 								p("					if(rs.getInt(\""
 										+ left[left.length - 1] + "\")"
-										+ sign + "al.get(i)." + con[1]
+										+ sign + ParseAggregate(con[1])
 										+ "){");
 								leftbrace++;
 							}
@@ -497,7 +545,7 @@ public class GenerateNewJAVA {
 			for (sBean sb : para.getF()) {
 				String[] strs = sb.name.split("_");
 				if (sb.name.startsWith(String.valueOf(lop))) {
-					if (sb.name.contains("ALL")) {
+					if (sb.name.contains("count")) {
 						p("						al.get(i)._" + parseName(sb.name)
 								+ " = update(al.get(i)._" + parseName(sb.name) + ", 1 );");
 					} else {
@@ -772,6 +820,43 @@ public class GenerateNewJAVA {
 			return src;
 		}
 		return afterSplit[0] + "_" + afterSplit[2];
+	}
+	
+	
+	public static String ParseAggregate(String src){
+		//String[] parts = src.split("_|.");
+		String result;
+		if(src.contains("_")){
+			String [] splitRightOperend = src.split("\\.|_");
+			result = ("al.get(i)._" + splitRightOperend[0]);
+			result = result + ("_" + splitRightOperend[2]);
+			String aggregate = "";
+			switch(splitRightOperend[1]){
+			case"max":
+				aggregate = ".Max";
+				break;
+			case"min":
+				aggregate = (".Min");
+				break;
+			case"avg":
+				aggregate = (".getAvg()");
+				break;
+			case"count":
+				aggregate = (".Count");
+				break;
+			}
+			result = result + aggregate;
+		}
+		else if(src.contains(".")|| src.contains("_")){
+			result = ("al.get(i)._"+ src.replace(".", "_"));
+		}
+		else if(isNumeric(src)){
+			result = src;
+		}
+		else{
+			result = ("al.get(i)."+ src);
+		}
+		return result;
 	}
 
 	/**
