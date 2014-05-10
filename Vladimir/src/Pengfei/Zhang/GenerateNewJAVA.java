@@ -11,7 +11,7 @@ import Siyuan.Zheng.Parameters;
 import Siyuan.Zheng.sBean;
 import SiyuanPeng.ParseMF;
 import SiyuanPeng.ParseParameters;
-import SiyuanPeng.Util;
+import SiyuanPeng.UtilInfoSchema;;
 
 public class GenerateNewJAVA {
 
@@ -39,7 +39,7 @@ public class GenerateNewJAVA {
 		mf_s = ParseMF.mfParase(para);
 		//
 		// get information_schema
-		Util util = new Util();
+		UtilInfoSchema util = new UtilInfoSchema();
 		util.UtilGenerator();
 		// build a instance of GenerateNewJAVA class
 
@@ -116,7 +116,7 @@ public class GenerateNewJAVA {
 		p("public int Max = 0;");
 		p("public int Min = 99999;");
 		p("public int Count = 0;");
-		p("public int Sum = 0;");
+		p("public double Sum = 0;");
 		p("public int Sum_of_AVG = 0;");
 		p("public int Count_of_AVG = 0;");
 		p("public int AVG = 0;");
@@ -132,7 +132,7 @@ public class GenerateNewJAVA {
 		p("}");
 
 		p("public int getAvg(){");
-		p("	int sum = this.Sum;");
+		p("	int sum = (int)this.Sum;");
 		p("if(Count == 0){");
 		p("return 0;");
 		p("}");
@@ -518,6 +518,20 @@ public class GenerateNewJAVA {
 
 							}
 							// if right opertend is int, just compare it
+							else{
+
+								if (isNumeric(con[1])) {
+									p("					if(rs.getInt(\""
+											+ left[left.length - 1] + "\")"
+											+ "==" + " " + con[1] + "){");
+								} else {
+									p("					if(rs.getInt(\""
+											+ left[left.length - 1] + "\")"
+											+ "==" + ParseAggregate(con[1])
+											+ "){");
+									leftbrace++;
+								}
+							}
 
 							// if operater
 						
@@ -528,7 +542,7 @@ public class GenerateNewJAVA {
 							if (isNumeric(con[1])) {
 								p("					if(rs.getInt(\""
 										+ left[left.length - 1] + "\")"
-										+ "==" + " " + con[1] + "){");
+										+ sign + " " + con[1] + "){");
 							} else {
 								p("					if(rs.getInt(\""
 										+ left[left.length - 1] + "\")"
