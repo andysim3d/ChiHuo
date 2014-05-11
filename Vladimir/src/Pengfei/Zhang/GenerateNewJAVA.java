@@ -1,3 +1,9 @@
+/**
+ * This is the main class which calls all other base classes aims to generate the program based on the input query.
+ * 
+ */
+
+
 package Pengfei.Zhang;
 
 import java.io.FileWriter;

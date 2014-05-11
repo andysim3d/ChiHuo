@@ -1,3 +1,6 @@
+/**
+ * The class which is used to formatting the output, used in GenerateNewJava class.
+ */
 package Siyuan.Zheng;
 
 public class outPutFormat {
